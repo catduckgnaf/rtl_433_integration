@@ -20,11 +20,26 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle a flow initialized by the user."""
         _errors = {}
         if user_input is not None:
-            # Your logic here without credential validation
-            return self.async_create_entry(
-                title=user_input[CONF_HOST],
-                data=user_input,
-            )
+            try:
+                # Replace username with host and password with port
+                await self._test_credentials(
+                    host=user_input[CONF_HOST],
+                    port=user_input[CONF_PORT],
+                )
+            except IntegrationBlueprintApiClientAuthenticationError as exception:
+                LOGGER.warning(exception)
+                _errors["base"] = "auth"
+            except IntegrationBlueprintApiClientCommunicationError as exception:
+                LOGGER.error(exception)
+                _errors["base"] = "connection"
+            except IntegrationBlueprintApiClientError as exception:
+                LOGGER.exception(exception)
+                _errors["base"] = "unknown"
+            else:
+                return self.async_create_entry(
+                    title=user_input[CONF_HOST],
+                    data=user_input,
+                )
 
         return self.async_show_form(
             step_id="user",
@@ -48,3 +63,4 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             ),
             errors=_errors,
         )
+
