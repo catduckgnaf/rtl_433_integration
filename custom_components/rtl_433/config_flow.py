@@ -65,25 +65,25 @@ class rtlFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     data=user_input,
                 )
 
-        return self.async_show_form(
-            step_id="user",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(
-                        CONF_HOST,
-                        default=(user_input or {"192.168.0.100"}).get(CONF_HOST),
-                    ): selector.TextSelector(
-                        selector.TextSelectorConfig(
-                            type=selector.TextSelectorType.TEXT
-                        ),
-                    ),
-                    vol.Required(CONF_PORT): selector.TextSelector(
-                        default=(user_input or {9443}).get(CONF_PORT),
-                        selector.TextSelectorConfig(
-                            type=selector.TextSelectorType.NUMBER
-                        ),
-                    ),
-                }
+return self.async_show_form(
+    step_id="user",
+    data_schema=vol.Schema(
+        {
+            vol.Required(
+                CONF_HOST,
+                default=(user_input or {"192.168.0.100"}).get(CONF_HOST),
+            ): selector.TextSelector(
+                selector.TextSelectorConfig(
+                    type=selector.TextSelectorType.TEXT
+                ),
             ),
-            errors=_errors,
-        )
+            vol.Required(CONF_PORT): selector.TextSelector(
+                default=(user_input or {9443}).get(CONF_PORT),
+                selector.TextSelectorConfig(
+                    type=selector.TextSelectorType.NUMBER
+                ),
+            ),
+        }
+    ),
+    errors=_errors
+)
