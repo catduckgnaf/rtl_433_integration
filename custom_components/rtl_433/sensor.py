@@ -4,8 +4,8 @@ from __future__ import annotations
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
 
 from .const import DOMAIN
-from .coordinator import BlueprintDataUpdateCoordinator
-from .entity import IntegrationBlueprintEntity
+from .coordinator import rtlDataUpdateCoordinator
+from .entity import IntegrationrtlEntity
 
 ENTITY_DESCRIPTIONS = (
     SensorEntityDescription(
@@ -20,18 +20,18 @@ async def async_setup_entry(hass, entry, async_add_devices):
     """Set up the sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     entities = [
-        IntegrationBlueprintSensor(coordinator, entity_description)
+        IntegrationrtlSensor(coordinator, entity_description)
         for entity_description in ENTITY_DESCRIPTIONS
     ]
     async_add_devices(entities)
 
 
-class IntegrationBlueprintSensor(IntegrationBlueprintEntity, SensorEntity):
-    """integration_blueprint Sensor class."""
+class IntegrationrtlSensor(IntegrationrtlEntity, SensorEntity):
+    """integration_rtl Sensor class."""
 
     def __init__(
         self,
-        coordinator: BlueprintDataUpdateCoordinator,
+        coordinator: rtlDataUpdateCoordinator,
         entity_description: SensorEntityDescription,
     ) -> None:
         """Initialize the sensor class."""

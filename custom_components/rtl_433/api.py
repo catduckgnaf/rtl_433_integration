@@ -7,20 +7,20 @@ import socket
 import aiohttp
 import async_timeout
 
-class IntegrationBlueprintApiClientError(Exception):
+class IntegrationrtlApiClientError(Exception):
     """Exception to indicate a general API error."""
 
-class IntegrationBlueprintApiClientCommunicationError(
-    IntegrationBlueprintApiClientError
+class IntegrationrtlApiClientCommunicationError(
+    IntegrationrtlApiClientError
 ):
     """Exception to indicate a communication error."""
 
-class IntegrationBlueprintApiClientAuthenticationError(
-    IntegrationBlueprintApiClientError
+class IntegrationrtlApiClientAuthenticationError(
+    IntegrationrtlApiClientError
 ):
     """Exception to indicate an authentication error."""
 
-class IntegrationBlueprintApiClient:
+class IntegrationrtlApiClient:
     """rtl_433 HTTP API WS Client."""
 
     BASE_URL = "https://jsonplaceholder.typicode.com/posts/1"
@@ -66,25 +66,25 @@ class IntegrationBlueprintApiClient:
                     json=data,
                 )
                 if response.status in (401, 403):
-                    raise IntegrationBlueprintApiClientAuthenticationError(
+                    raise IntegrationrtlApiClientAuthenticationError(
                         "Invalid credentials",
                     )
                 response.raise_for_status()
                 return await response.json()
 
         except asyncio.TimeoutError as exception:
-            raise IntegrationBlueprintApiClientCommunicationError(
+            raise IntegrationrtlApiClientCommunicationError(
                 "Timeout error fetching information",
             ) from exception
         except aiohttp.ClientResponseError as exception:
-            raise IntegrationBlueprintApiClientCommunicationError(
+            raise IntegrationrtlApiClientCommunicationError(
                 f"HTTP error fetching information: {exception.status}"
             ) from exception
         except (aiohttp.ClientError, socket.gaierror) as exception:
-            raise IntegrationBlueprintApiClientCommunicationError(
+            raise IntegrationrtlApiClientCommunicationError(
                 "Error fetching information",
             ) from exception
         except Exception as exception:  # pylint: disable=broad-except
-            raise IntegrationBlueprintApiClientError(
+            raise IntegrationrtlApiClientError(
                 "Something really wrong happened!"
             ) from exception

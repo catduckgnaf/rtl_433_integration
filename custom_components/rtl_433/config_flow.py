@@ -10,7 +10,7 @@ from homeassistant.helpers import selector
 
 from .const import DOMAIN, LOGGER
 
-class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
+class rtlFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Config flow for rtl_433."""
 
     VERSION = 1
@@ -50,13 +50,13 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 # Continue with additional credential testing if needed
                 # try:
                 #     await self._test_credentials(host=host, port=port)
-                # except IntegrationBlueprintApiClientAuthenticationError as exception:
+                # except IntegrationrtlApiClientAuthenticationError as exception:
                 #     LOGGER.warning(exception)
                 #     _errors["base"] = "auth"
-                # except IntegrationBlueprintApiClientCommunicationError as exception:
+                # except IntegrationrtlApiClientCommunicationError as exception:
                 #     LOGGER.error(exception)
                 #     _errors["base"] = "connection"
-                # except IntegrationBlueprintApiClientError as exception:
+                # except IntegrationrtlApiClientError as exception:
                 #     LOGGER.exception(exception)
                 #     _errors["base"] = "unknown"
 

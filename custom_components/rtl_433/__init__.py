@@ -6,7 +6,7 @@ from homeassistant.const import CONF_PORT, CONF_HOST, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .api import IntegrationBlueprintApiClient
+from .api import IntegrationrtlApiClient
 from .const import DOMAIN
 from .coordinator import RTL433DataUpdateCoordinator
 
@@ -21,7 +21,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = coordinator = RTL433DataUpdateCoordinator(
         hass=hass,
-        client=IntegrationBlueprintApiClient(
+        client=IntegrationrtlApiClient(
             host=entry.data[CONF_HOST],
             port=entry.data[CONF_PORT],
             session=async_get_clientsession(hass),
