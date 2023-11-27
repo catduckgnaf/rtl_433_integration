@@ -35,7 +35,7 @@ class IntegrationBlueprintApiClient:
     ) -> None:
         """Sample API Client."""
         self._host = host
-        self._password = password
+        self._port = port
         self._session = session
 
     async def async_get_data(self) -> any:

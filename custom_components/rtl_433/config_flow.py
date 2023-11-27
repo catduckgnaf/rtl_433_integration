@@ -30,8 +30,8 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             try:
                 await self._test_credentials(
-                    username=user_input[CONF_HOST],
-                    password=user_input[CONF_PORT],
+                    host=user_input[CONF_HOST],
+                    port=user_input[CONF_PORT],
                 )
             except IntegrationBlueprintApiClientAuthenticationError as exception:
                 LOGGER.warning(exception)
@@ -54,15 +54,16 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required(
                         CONF_HOST,
-                        default=(user_input or {}).get(CONF_HOST),
+                        default=(user_input or {"192.168.0.100"}).get(CONF_HOST),
                     ): selector.TextSelector(
                         selector.TextSelectorConfig(
                             type=selector.TextSelectorType.TEXT
                         ),
                     ),
                     vol.Required(CONF_PORT): selector.TextSelector(
+                        default=(user_input or {9443}).get(CONF_PORT),
                         selector.TextSelectorConfig(
-                            type=selector.TextSelectorType.PASSWORD
+                            type=selector.TextSelectorType.NUMBER
                         ),
                     ),
                 }
