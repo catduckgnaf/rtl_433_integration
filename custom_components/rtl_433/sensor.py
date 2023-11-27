@@ -19,13 +19,11 @@ ENTITY_DESCRIPTIONS = (
 async def async_setup_entry(hass, entry, async_add_devices):
     """Set up the sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
-    async_add_devices(
-        IntegrationBlueprintSensor(
-            coordinator=coordinator,
-            entity_description=entity_description,
-        )
+    entities = [
+        IntegrationBlueprintSensor(coordinator, entity_description)
         for entity_description in ENTITY_DESCRIPTIONS
-    )
+    ]
+    async_add_devices(entities)
 
 
 class IntegrationBlueprintSensor(IntegrationBlueprintEntity, SensorEntity):

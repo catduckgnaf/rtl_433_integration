@@ -13,7 +13,6 @@ from .coordinator import RTL433DataUpdateCoordinator
 PLATFORMS: list[Platform] = [
     Platform.SENSOR,
     Platform.BINARY_SENSOR,
-    Platform.SWITCH,
 ]
 
 # https://developers.home-assistant.io/docs/config_entries_index/#setting-up-an-entry
