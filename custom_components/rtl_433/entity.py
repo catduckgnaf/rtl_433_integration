@@ -1,5 +1,5 @@
 """rtl_433_entity class."""
-from __future__ import unicode_literals
+from __future__ import annotations
 
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -9,7 +9,7 @@ from .coordinator import BlueprintDataUpdateCoordinator
 
 
 class IntegrationBlueprintEntity(CoordinatorEntity):
-    """BlueprintEntity class."""
+    """rtl_433 class."""
 
     _attr_attribution = ATTRIBUTION
 

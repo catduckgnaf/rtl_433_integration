@@ -1,5 +1,5 @@
 """Switch platform for rtl_433."""
-from __future__ import unicode_literals
+from __future__ import annotations
 
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
 

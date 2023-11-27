@@ -1,5 +1,5 @@
 """rtl_433 API WS Client."""
-from __future__ import unicode_literals
+from __future__ import annotations
 
 import asyncio
 import socket
@@ -29,12 +29,12 @@ class IntegrationBlueprintApiClient:
 
     def __init__(
         self,
-        username: str,
-        password: str,
+        host: str,
+        port: int,
         session: aiohttp.ClientSession,
     ) -> None:
         """Sample API Client."""
-        self._username = username
+        self._host = host
         self._password = password
         self._session = session
 

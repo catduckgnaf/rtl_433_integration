@@ -1,5 +1,5 @@
 """Custom integration to integrate rtl_433 with Home Assistant."""
-from __future__ import unicode_literals
+from __future__ import annotations
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_PORT, CONF_HOST, Platform

@@ -1,5 +1,5 @@
 """Adds config flow for rtl_433."""
-from __future__ import unicode_literals
+from __future__ import annotations
 
 import voluptuous as vol
 from homeassistant import config_entries
@@ -62,7 +62,7 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     ),
                     vol.Required(CONF_PORT): selector.TextSelector(
                         selector.TextSelectorConfig(
-                            type=selector.TextSelectorType.NUMBER
+                            type=selector.TextSelectorType.PASSWORD
                         ),
                     ),
                 }
