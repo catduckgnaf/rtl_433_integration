@@ -62,7 +62,7 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     ),
                     vol.Required(CONF_PORT): selector.TextSelector(
                         selector.TextSelectorConfig(
-                            type=selector.TextSelectorType.PASSWORD
+                            type=selector.TextSelectorType.NUMBER
                         ),
                     ),
                 }
