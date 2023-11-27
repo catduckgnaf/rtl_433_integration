@@ -24,8 +24,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN][entry.entry_id] = coordinator = BlueprintDataUpdateCoordinator(
         hass=hass,
         client=IntegrationBlueprintApiClient(
-            host=entry.data[CONF_HOST],
-            port=entry.data[CONF_PORT],
+            username=entry.data[CONF_HOST],
+            password=entry.data[CONF_PORT],
             session=async_get_clientsession(hass),
         ),
     )
