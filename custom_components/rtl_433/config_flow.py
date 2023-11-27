@@ -1,32 +1,9 @@
-"""Adds config flow for rtl_433."""
-from __future__ import annotations
-
-import asyncio
-import subprocess
-import voluptuous as vol
-from homeassistant import config_entries
-from homeassistant.const import CONF_HOST, CONF_PORT
-from homeassistant.helpers import selector
-
-from .const import DOMAIN, LOGGER
-
 class rtlFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Config flow for rtl_433."""
 
     VERSION = 1
 
-    async def _test_connection(self, host: str, port: int) -> bool:
-        """Test the connection to the specified host and port."""
-        try:
-            result = await asyncio.to_thread(subprocess.run, 
-                ["ping", "-c", "1", f"{host}:{port}"],  # Adjust for Windows if needed
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            )
-            return result.returncode == 0
-        except Exception as e:
-            LOGGER.error(f"Error testing connection: {e}")
-            return False
+    # ... rest of your code ...
 
     async def async_step_user(
         self,
@@ -58,14 +35,14 @@ class rtlFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required(
                         CONF_HOST,
-                        default=(user_input or {"192.168.0.100"}).get(CONF_HOST),
+                        default=(user_input or {}).get(CONF_HOST, "192.168.0.100"),
                     ): selector.TextSelector(
                         selector.TextSelectorConfig(
                             type=selector.TextSelectorType.TEXT
                         ),
                     ),
                     vol.Required(CONF_PORT): selector.TextSelector(
-                        default=(user_input or {9443}).get(CONF_PORT),
+                        default=(user_input or {}).get(CONF_PORT, 9443),
                         selector.TextSelectorConfig(
                             type=selector.TextSelectorType.NUMBER
                         ),
