@@ -1,4 +1,4 @@
-"""Sample API Client."""
+"""rtl_433 API WS Client."""
 from __future__ import annotations
 
 import asyncio
@@ -25,7 +25,7 @@ class IntegrationBlueprintApiClientAuthenticationError(
 
 
 class IntegrationBlueprintApiClient:
-    """Sample API Client."""
+    """rtl_433 HTTP API WS Client."""
 
     def __init__(
         self,
