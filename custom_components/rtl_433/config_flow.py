@@ -4,7 +4,7 @@ from __future__ import annotations
 import voluptuous as vol
 
 from homeassistant import config_entries
-from homeassistant.const import CONF_HOST, CONF_HOST
+from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.helpers import selector
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
@@ -18,7 +18,7 @@ from .const import DOMAIN, LOGGER
 
 
 class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
-    """Config flow for Blueprint."""
+    """Config flow for rtl_433."""
 
     VERSION = 1
 
