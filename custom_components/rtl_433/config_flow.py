@@ -1,5 +1,5 @@
 """Adds config flow for rtl_433."""
-from __future__ import annotations
+from __future__ import unicode_literals
 
 import voluptuous as vol
 from homeassistant import config_entries

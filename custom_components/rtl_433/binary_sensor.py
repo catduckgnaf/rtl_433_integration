@@ -1,5 +1,5 @@
 """Binary sensor platform for rtl_433."""
-from __future__ import annotations
+from __future__ import unicode_literals
 
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,

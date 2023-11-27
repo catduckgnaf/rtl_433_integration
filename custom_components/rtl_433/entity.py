@@ -1,5 +1,5 @@
 """rtl_433_entity class."""
-from __future__ import annotations
+from __future__ import unicode_literals
 
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
