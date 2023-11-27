@@ -47,43 +47,30 @@ class rtlFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 _errors["base"] = "unknown"
 
             if not _errors:
-                # Continue with additional credential testing if needed
-                # try:
-                #     await self._test_credentials(host=host, port=port)
-                # except IntegrationrtlApiClientAuthenticationError as exception:
-                #     LOGGER.warning(exception)
-                #     _errors["base"] = "auth"
-                # except IntegrationrtlApiClientCommunicationError as exception:
-                #     LOGGER.error(exception)
-                #     _errors["base"] = "connection"
-                # except IntegrationrtlApiClientError as exception:
-                #     LOGGER.exception(exception)
-                #     _errors["base"] = "unknown"
-
                 return self.async_create_entry(
                     title=host,
                     data=user_input,
                 )
 
-return self.async_show_form(
-    step_id="user",
-    data_schema=vol.Schema(
-        {
-            vol.Required(
-                CONF_HOST,
-                default=(user_input or {"192.168.0.100"}).get(CONF_HOST),
-            ): selector.TextSelector(
-                selector.TextSelectorConfig(
-                    type=selector.TextSelectorType.TEXT
-                ),
+        return self.async_show_form(
+            step_id="user",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(
+                        CONF_HOST,
+                        default=(user_input or {"192.168.0.100"}).get(CONF_HOST),
+                    ): selector.TextSelector(
+                        selector.TextSelectorConfig(
+                            type=selector.TextSelectorType.TEXT
+                        ),
+                    ),
+                    vol.Required(CONF_PORT): selector.TextSelector(
+                        default=(user_input or {9443}).get(CONF_PORT),
+                        selector.TextSelectorConfig(
+                            type=selector.TextSelectorType.NUMBER
+                        ),
+                    ),
+                }
             ),
-            vol.Required(CONF_PORT): selector.TextSelector(
-                default=(user_input or {9443}).get(CONF_PORT),
-                selector.TextSelectorConfig(
-                    type=selector.TextSelectorType.NUMBER
-                ),
-            ),
-        }
-    ),
-    errors=_errors
-)
+            errors=_errors
+        )
