@@ -18,7 +18,7 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import (DataUpdateCoordinator,
                                                       UpdateFailed)
 
-from .const import DOMAIN, GW_ID, WS_HOST, NAME, PLATFORMS, TAP_ID
+from .const import DOMAIN, WS_IP, WS_PORT, WS_HOST, RF_ID, SDR_ID NAME, PLATFORMS
 from .rtl_433 import rtl433http
 
 _LOGGER = logging.getLogger(__name__)
@@ -34,18 +34,18 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry)-> bool
     linker = rtl433http()
     linker.set_ip(ws_host)
     try:
-        gw_id = await linker.get_gw_id()
+        sdr_id = await linker.get_sdr_id()
     except JSONDecodeError:
         try:
             await asyncio.sleep(random.randint(1,3))
-            gw_id = await linker.get_gw_id()
+            sdr_id = await linker.get_sdr_id()
         except JSONDecodeError:
             await asyncio.sleep(random.randint(1,3))
-            gw_id = await linker.get_gw_id()
+            sdr_id = await linker.get_sdr_id()
 
-    _LOGGER.debug(f"Found GW_ID: {gw_id}")
+    _LOGGER.debug(f"Found SDR_ID: {sdr_id}")
 
-    gateway_config = await linker.get_gw_config(gw_id)
+    gateway_config = await linker.get_sdr_config(sdr_id)
     if "end_dev" not in gateway_config:
         raise IntegrationError("Linktap Gateway needs to be updated")
 
@@ -57,30 +57,30 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry)-> bool
 
     coordinator_conf = {
         WS_HOST: ws_host,
-        GW_ID: gw_id,
+        SDR_ID: sdr_id,
     }
     counter = 0
     tap_list = []
-    for tap_id in devices["devs"]:
-        coordinator = LinktapCoordinator(hass, linker, coordinator_conf, tap_id)
+    for rf in devices["devs"]:
+        coordinator = LinktapCoordinator(hass, linker, coordinator_conf, rf_id)
         device_name = devices["names"][counter]
         tap_list.append({
             NAME: device_name,
-            TAP_ID: tap_id,
+            RF_ID: rf_id,
             WS_HOST: ws_host,
             "coordinator": coordinator
         })
         counter = counter + 1
         await coordinator.async_config_entry_first_refresh()
-        _LOGGER.debug(f"Coordinator has synced for {tap_id}")
-    _LOGGER.debug(f"List of Taps: {tap_list}")
+        _LOGGER.debug(f"Coordinator has synced for {rf_id}")
+    _LOGGER.debug(f"List of RF Protocols: {rf_list}")
 
     vol_unit = gateway_config["vol_unit"]
     _LOGGER.debug(f"Setting volume unit to {vol_unit}")
 
     conf = {
         WS_HOST: ws_host,
-        GW_ID: gw_id,
+        SDR_ID: sdr_id,
         "taps": tap_list,
         "vol_unit": vol_unit,
     }
@@ -105,7 +105,7 @@ async def async_remove_config_entry_device(hass: core.HomeAssistant, entry: Conf
     return True
 
 class LinktapCoordinator(DataUpdateCoordinator):
-    def __init__(self, hass, linker, conf, tap_id):
+    def __init__(self, hass, linker, conf, rf_id):
         super().__init__(
             hass,
             _LOGGER,
@@ -115,10 +115,10 @@ class LinktapCoordinator(DataUpdateCoordinator):
         self.tap_api = linker
         self.conf = conf
         self.hass = hass
-        self.tap_id = tap_id
+        self.rf_id = rf_id
 
-    def get_gw_id(self):
-        return self.conf[GW_ID]
+    def get_sdr_id(self):
+        return self.conf[SDR_ID]
 
     #def get_vol_unit(self):
     #    return self.conf["vol_unit"]
@@ -130,18 +130,18 @@ class LinktapCoordinator(DataUpdateCoordinator):
         so entities can quickly look up their data.
         """
 
-        #tap_id = self.conf["taps"][TAP_ID]
-        gw_id = self.conf[GW_ID]
+        #rf_id = self.conf["RF Protocols"][RF_ID]
+        sdr_id = self.conf[SDR_ID]
 
         try:
             # Note: asyncio.TimeoutError and aiohttp.ClientError are already
             # handled by the data update coordinator.
             async with async_timeout.timeout(10):
-                return await self.tap_api.fetch_data(gw_id, self.tap_id)
+                return await self.tap_api.fetch_data(sdr_id, self.rf_id)
         except:# ApiAuthError as err:
             await asyncio.sleep(random.randint(1,3))
             async with async_timeout.timeout(10):
-                return await self.tap_api.fetch_data(gw_id, self.tap_id)
+                return await self.tap_api.fetch_data(sdr_id, self.rf_id)
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
         #    raise ConfigEntryAuthFailed from err

@@ -18,8 +18,8 @@ from homeassistant.util import slugify
 _LOGGER = logging.getLogger(__name__)
 
 from .const import (ATTR_DEFAULT_TIME, ATTR_DURATION, ATTR_STATE, ATTR_VOL,
-                    ATTR_VOLUME, DEFAULT_TIME, DEFAULT_VOL, DOMAIN, GW_ID,
-                    WS_HOST, MANUFACTURER, NAME, TAP_ID)
+                    ATTR_VOLUME, DEFAULT_TIME, DEFAULT_VOL, DOMAIN, SDR_ID,
+                    WS_HOST, WS_IP, WS_PORT MANUFACTURER, NAME, RF_ID)
 
 
 async def async_setup_entry(
@@ -92,13 +92,13 @@ class RtlSwitch(CoordinatorEntity, SwitchEntity):
         #watering_volume = None
         #if volume != DEFAULT_VOL:
         #    watering_volume = volume
-        gw_id = self.coordinator.get_gw_id()
-        attributes = await self.tap_api.turn_on(gw_id, self.tap_id, seconds, self.get_watering_volume())
+        sdr_id = self.coordinator.get_sdr_id()
+        attributes = await self.tap_api.turn_on(sdr_id, self.tap_id, seconds, self.get_watering_volume())
         await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs):
-        gw_id = self.coordinator.get_gw_id()
-        attributes = await self.tap_api.turn_off(gw_id, self.tap_id)
+        sdr_id = self.coordinator.get_sdr_id()
+        attributes = await self.tap_api.turn_off(sdr_id, self.tap_id)
         await self.coordinator.async_request_refresh()
 
     def get_watering_duration(self):

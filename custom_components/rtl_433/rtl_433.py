@@ -15,7 +15,7 @@ _LOGGER = logging.getLogger(__name__)
 class rtl433http:
 
     ip = False
-    gw_id = False
+    sdr_id = False
 
     def __init__(self):
         # Do nothing
@@ -27,11 +27,11 @@ class rtl433http:
     def get_ip(self, ip):
         return self.ip
 
-    def set_gw_id(self, gw_id):
-        self.gw_id = gw_id
+    def set_sdr_id(self, sdr_id):
+        self.sdr_id = sdr_id
 
-    def get_gw_id(self):
-        return self.gw_id
+    def get_sdr_id(self):
+        return self.sdr_id
 
     def clean_response(self, text):
         """Remove html tags from a string"""
@@ -69,25 +69,25 @@ class rtl433http:
         await session.close()
         return response
 
-    async def fetch_data(self, gw_id, dev_id):
-        status = await self.get_tap_status(gw_id, dev_id)
+    async def fetch_data(self, sdr_id, dev_id):
+        status = await self.get_tap_status(sdr_id, dev_id)
         return status
 
-    async def get_tap_status(self, gw_id, dev_id):
+    async def get_tap_status(self, sdr_id, dev_id):
         data = {
             "cmd": STATUS_CMD,
-            "gw_id": gw_id,
+            "sdr_id": sdr_id,
             "dev_id": dev_id,
         }
         status = await self._request(data)
         return status
 
-    async def turn_on(self, gw_id, dev_id, seconds=None, volume=None):
+    async def turn_on(self, sdr_id, dev_id, seconds=None, volume=None):
         if (not seconds or seconds == 0) and not volume:
             seconds = DEFAULT_TIME
         data = {
             "cmd": START_CMD,
-            "gw_id": gw_id,
+            "sdr_id": sdr_id,
             "dev_id": dev_id,
             "duration": int(float(seconds))
         }
@@ -98,35 +98,35 @@ class rtl433http:
         _LOGGER.debug(f"Response: {status}")
         return status["ret"] == 0
 
-    async def turn_off(self, gw_id, dev_id):
+    async def turn_off(self, sdr_id, dev_id):
         data = {
             "cmd": STOP_CMD,
-            "gw_id": gw_id,
+            "sdr_id": sdr_id,
             "dev_id": dev_id,
         }
         status = await self._request(data)
         return status["ret"] == 0
 
-    async def get_gw_config(self, gw_id):
+    async def get_sdr_config(self, sdr_id):
         data = {
             "cmd": CONFIG_CMD,
-            "gw_id": gw_id
+            "sdr_id": sdr_id
         }
         status = await self._request(data)
         return status
 
     ## Config helper functions: If multiples of these are going to be used,
     ## it would make sense to use the config function above and use the output
-    async def get_vol_unit(self, gw_id):
-        config = await self.get_gw_config(gw_id)
+    async def get_vol_unit(self, sdr_id):
+        config = await self.get_sdr_config(sdr_id)
         return config["vol_unit"]
 
-    async def get_version(self, gw_id):
-        config = await self.get_gw_config(gw_id)
+    async def get_version(self, sdr_id):
+        config = await self.get_sdr_config(sdr_id)
         return config["ver"]
 
-    async def get_end_devs(self, gw_id):
-        config = await self.get_gw_config(gw_id)
+    async def get_end_devs(self, sdr_id):
+        config = await self.get_sdr_config(sdr_id)
         return {
             "devs": config["end_dev"],
             "names": config["dev_name"],
@@ -134,12 +134,12 @@ class rtl433http:
 
     """This is potentially a little hacky, as it actually sends a malformatted request to the gateway.
     The ID of the gateway is returned in this malformed request, so lets use it for good and not evil."""
-    async def get_gw_id(self):
+    async def get_sdr_id(self):
         data = {
             "cmd":STATUS_CMD
         }
         status = await self._request(data)
-        return status["gw_id"]
+        return status["sdr_id"]
 
     """alert: type of alert
     0: all types of alert.
@@ -149,12 +149,12 @@ class rtl433http:
     4: unusually high flow alert.
     5: unusually low flow alert.
     """
-    async def dismiss_alert(self, gw_id, dev_id, alert_id=False):
+    async def dismiss_alert(self, sdr_id, dev_id, alert_id=False):
         if not alert_id:
             alert_id = 0
         data = {
             "cmd": DISMISS_ALERT_CMD,
-            "gw_id": gw_id,
+            "sdr_id": sdr_id,
             "dev_id": dev_id,
             "alert": alert_id,
             "enable": True
