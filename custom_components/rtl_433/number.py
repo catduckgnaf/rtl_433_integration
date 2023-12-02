@@ -31,12 +31,12 @@ async def async_setup_entry(
         """For each tap, we set a number for duration and volume"""
         _LOGGER.debug(f"Configuring numbers for tap {tap}")
         coordinator = coordinator = tap["coordinator"]
-        numbers.append(LinktapNumber(coordinator, hass, tap, "Watering Duration", "mdi:clock", "m"))
-        numbers.append(LinktapNumber(coordinator, hass, tap, "Watering Volume", "mdi:water", hass.data[DOMAIN][config.entry_id]["conf"]["vol_unit"]))
+        numbers.append(RtlNumber(coordinator, hass, tap, "Watering Duration", "mdi:clock", "m"))
+        numbers.append(RtlNumber(coordinator, hass, tap, "Watering Volume", "mdi:water", hass.data[DOMAIN][config.entry_id]["conf"]["vol_unit"]))
 
     async_add_entities(numbers, True)
 
-class LinktapNumber(CoordinatorEntity, RestoreNumber):
+class RtlNumber(CoordinatorEntity, RestoreNumber):
     def __init__(self, coordinator: DataUpdateCoordinator, hass, tap, number_suffix, icon, unit_of_measurement):
         super().__init__(coordinator)
         self._state = None

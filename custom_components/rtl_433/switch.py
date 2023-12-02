@@ -36,10 +36,10 @@ async def async_setup_entry(
     for tap in taps:
         coordinator = tap["coordinator"]
         _LOGGER.debug(f"Configuring switch for tap {tap}")
-        switches.append(LinktapSwitch(coordinator, hass, tap))
+        switches.append(RtlSwitch(coordinator, hass, tap))
     async_add_entities(switches, True)
 
-class LinktapSwitch(CoordinatorEntity, SwitchEntity):
+class RtlSwitch(CoordinatorEntity, SwitchEntity):
     def __init__(self, coordinator: DataUpdateCoordinator, hass, tap):
         super().__init__(coordinator)
         self._state = None

@@ -33,21 +33,21 @@ async def async_setup_entry(
     for tap in taps:
         coordinator = tap["coordinator"]
         _LOGGER.debug(f"Configuring binary sensors for tap {tap}")
-        binary_sensors.append(LinktapBinarySensor(coordinator, hass, tap=tap, name="Is Linked", data_attribute="is_rf_linked"))
-        binary_sensors.append(LinktapBinarySensor(coordinator, hass, tap=tap, data_attribute="is_fall", icon="mdi:meter-electric-outline"))
-        binary_sensors.append(LinktapBinarySensor(coordinator, hass, tap=tap, data_attribute="is_cutoff", icon="mdi:scissors-cutting"))
-        binary_sensors.append(LinktapBinarySensor(coordinator, hass, tap=tap, name="Is Leaking", data_attribute="is_leak", icon="mdi:leak"))
-        binary_sensors.append(LinktapBinarySensor(coordinator, hass, tap=tap, name="Is Clogged", data_attribute="is_clog",  icon="mdi:leak-off"))
-        binary_sensors.append(LinktapBinarySensor(coordinator, hass, tap=tap, data_attribute="is_broken", icon="mdi:scissors-cutting"))
-        binary_sensors.append(LinktapBinarySensor(coordinator, hass, tap=tap, data_attribute="is_manual_mode", icon="mdi:account-switch"))
-        binary_sensors.append(LinktapBinarySensor(coordinator, hass, tap=tap, data_attribute="is_watering", icon="mdi:water"))
+        binary_sensors.append(RtlBinarySensor(coordinator, hass, tap=tap, name="Is Linked", data_attribute="is_rf_linked"))
+        binary_sensors.append(RtlBinarySensor(coordinator, hass, tap=tap, data_attribute="is_fall", icon="mdi:meter-electric-outline"))
+        binary_sensors.append(RtlBinarySensor(coordinator, hass, tap=tap, data_attribute="is_cutoff", icon="mdi:scissors-cutting"))
+        binary_sensors.append(RtlBinarySensor(coordinator, hass, tap=tap, name="Is Leaking", data_attribute="is_leak", icon="mdi:leak"))
+        binary_sensors.append(RtlBinarySensor(coordinator, hass, tap=tap, name="Is Clogged", data_attribute="is_clog",  icon="mdi:leak-off"))
+        binary_sensors.append(RtlBinarySensor(coordinator, hass, tap=tap, data_attribute="is_broken", icon="mdi:scissors-cutting"))
+        binary_sensors.append(RtlBinarySensor(coordinator, hass, tap=tap, data_attribute="is_manual_mode", icon="mdi:account-switch"))
+        binary_sensors.append(RtlBinarySensor(coordinator, hass, tap=tap, data_attribute="is_watering", icon="mdi:water"))
     async_add_entities(binary_sensors, True)
 
     platform = entity_platform.async_get_current_platform()
     platform.async_register_entity_service("dismiss_alerts", {}, "_dismiss_alerts")
     platform.async_register_entity_service("dismiss_alert", {}, "_dismiss_alert")
 
-class LinktapBinarySensor(CoordinatorEntity, BinarySensorEntity):
+class RtlBinarySensor(CoordinatorEntity, BinarySensorEntity):
 
     def __init__(self, coordinator: DataUpdateCoordinator, hass, tap, data_attribute, name=False, device_class=False, icon=False):
         super().__init__(coordinator)

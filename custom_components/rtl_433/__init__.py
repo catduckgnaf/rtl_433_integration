@@ -31,7 +31,7 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry)-> bool
 
     gw_ip = entry.data.get(GW_IP)
 
-    linker = LinktapLocal()
+    linker = rtl433http()
     linker.set_ip(gw_ip)
     try:
         gw_id = await linker.get_gw_id()
