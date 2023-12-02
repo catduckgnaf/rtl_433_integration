@@ -1,36 +1,40 @@
 """Custom integration to integrate rtl_433 with Home Assistant."""
-from __future__ import annotations
-
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_PORT, CONF_HOST, Platform
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-import async_timeout
 
-from .api import IntegrationRtlApiClient
 from .const import DOMAIN
 from .coordinator import Rtl433DataUpdateCoordinator
+from .config_flow import RtlFlowHandler
 
-PLATFORMS: list[Platform] = [
-    Platform.SENSOR,
-    Platform.BINARY_SENSOR,
-]
+async def async_setup(hass: HomeAssistant, config: dict) -> bool:
+    """Set up the integration."""
+    config_entries.async_setup_implementation(hass, config)
 
-# https://developers.home-assistant.io/docs/config_entries_index/#setting-up-an-entry
+    # Register the config flow handler
+    config_entries.HANDLERS.register(DOMAIN, RtlFlowHandler)
+
+    return True
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up this integration using UI."""
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = coordinator = Rtl433DataUpdateCoordinator(
         hass=hass,
         client=IntegrationRtlApiClient(
-            host=entry.data[CONF_HOST],
-            port=entry.data[CONF_PORT],
+            host=entry.data['host'],
+            port=entry.data['port'],
             session=async_get_clientsession(hass),
         ),
     )
-    # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
+
     await coordinator.async_config_entry_first_refresh()
 
+    PLATFORMS: list[Platform] = [
+        Platform.SENSOR,
+        Platform.BINARY_SENSOR,
+    ]
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 
