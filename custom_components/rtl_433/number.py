@@ -12,7 +12,7 @@ from homeassistant.util import slugify
 
 _LOGGER = logging.getLogger(__name__)
 
-from .const import (DEFAULT_TIME, DEFAULT_VOL, DOMAIN, GW_ID, GW_IP,
+from .const import (DEFAULT_TIME, DEFAULT_VOL, DOMAIN, GW_ID, WS_HOST,
                     MANUFACTURER, NAME, TAP_ID)
 
 
@@ -58,7 +58,7 @@ class RtlNumber(CoordinatorEntity, RestoreNumber):
             name=tap[NAME],
             manufacturer=MANUFACTURER,
             model=tap[TAP_ID],
-            configuration_url="http://" + tap[GW_IP] + "/"
+            configuration_url="http://" + tap[WS_HOST] + "/"
         )
 
         self._attrs = {}

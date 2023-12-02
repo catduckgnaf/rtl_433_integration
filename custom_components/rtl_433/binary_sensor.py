@@ -16,7 +16,7 @@ from homeassistant.util import slugify
 
 _LOGGER = logging.getLogger(__name__)
 
-from .const import DOMAIN, GW_ID, GW_IP, MANUFACTURER, NAME, TAP_ID
+from .const import DOMAIN, GW_ID, WS_HOST, MANUFACTURER, NAME, TAP_ID
 
 
 async def async_setup_entry(
@@ -75,7 +75,7 @@ class RtlBinarySensor(CoordinatorEntity, BinarySensorEntity):
             name=tap[NAME],
             manufacturer=MANUFACTURER,
             model=tap[TAP_ID],
-            configuration_url="http://" + tap[GW_IP] + "/"
+            configuration_url="http://" + tap[WS_HOST] + "/"
         )
 
     @property

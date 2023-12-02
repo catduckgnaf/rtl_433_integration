@@ -7,12 +7,12 @@ import secrets
 import voluptuous as vol
 from homeassistant import config_entries
 
-from .const import DEFAULT_NAME, DOMAIN, GW_ID, GW_IP, NAME, TAP_ID
+from .const import DEFAULT_NAME, DOMAIN, GW_ID, WS_HOST, NAME, TAP_ID
 
 _LOGGER = logging.getLogger(__name__)
 
 @config_entries.HANDLERS.register(DOMAIN)
-class rtlFlowHandler(config_entries.ConfigFlow):
+class RtlFlowHandler(config_entries.ConfigFlow):
 
     VERSION = 1
     def __init__(self):
@@ -30,7 +30,7 @@ class rtlFlowHandler(config_entries.ConfigFlow):
             return self.async_create_entry(title=DEFAULT_NAME, data=user_input)
 
         new_user_input = {
-            vol.Required(GW_IP, default=GW_IP): str,
+            vol.Required(WS_HOST, default=WS_HOST): str,
         }
 
         schema = vol.Schema(new_user_input)

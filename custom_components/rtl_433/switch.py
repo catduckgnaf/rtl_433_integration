@@ -19,7 +19,7 @@ _LOGGER = logging.getLogger(__name__)
 
 from .const import (ATTR_DEFAULT_TIME, ATTR_DURATION, ATTR_STATE, ATTR_VOL,
                     ATTR_VOLUME, DEFAULT_TIME, DEFAULT_VOL, DOMAIN, GW_ID,
-                    GW_IP, MANUFACTURER, NAME, TAP_ID)
+                    WS_HOST, MANUFACTURER, NAME, TAP_ID)
 
 
 async def async_setup_entry(
@@ -62,7 +62,7 @@ class RtlSwitch(CoordinatorEntity, SwitchEntity):
             },
             name=tap[NAME],
             manufacturer=MANUFACTURER,
-            configuration_url="http://" + tap[GW_IP] + "/"
+            configuration_url="http://" + tap[WS_HOST] + "/"
         )
 
     @property
