@@ -44,7 +44,7 @@ class RtlFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     data=user_input,
                 )
 
-        return self.async_show_form(
+        return await self.async_show_form(
             step_id="user",
             data_schema=vol.Schema(
                 {
@@ -64,5 +64,5 @@ class RtlFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     ),
                 }
             ),
-            errors=_errors  # Move this line to the end
+            errors=_errors
         )
