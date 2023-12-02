@@ -1,14 +1,12 @@
 {
     "domain": "rtl_433",
-    "name": "RTL 433",
-    "codeowners": [
-        "@catduckgnaf"
-    ],
+    "name": "rtl_433 http",
+    "codeowners": ["@catduckgnaf"],
     "config_flow": true,
     "dependencies": [],
-    "documentation": "https://github.com/catduckgnaf/Rtl_433_integration",
-    "iot_class": "cloud_polling",
-    "issue_tracker": "https://github.com/catduckgnaf/Rtl_433_integration/issues",
+    "documentation": "https://github.com/sh00t2kill/linktap_local_http_component",
+    "iot_class": "local_push",
+    "issue_tracker": "https://github.com/sh00t2kill/linktap_local_http_component",
     "requirements": [],
     "version": "0.1.0"
-}
+  }

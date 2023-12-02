@@ -1,68 +1,38 @@
-"""Adds config flow for rtl_433."""
+"""Config flow to configure."""
 from __future__ import annotations
+
+import logging
+import secrets
 
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.const import CONF_PORT, CONF_HOST
-from homeassistant.helpers import selector
-from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
-from .api import (
-    IntegrationRtlApiClient,
-    IntegrationRtlApiClientAuthenticationError,
-    IntegrationRtlApiClientCommunicationError,
-    IntegrationRtlApiClientError,
-)
-from .const import DOMAIN, LOGGER
+from .const import DEFAULT_NAME, DOMAIN, GW_ID, GW_IP, NAME, TAP_ID
 
-class RtlFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
-    """Config flow for Rtl_433."""
+_LOGGER = logging.getLogger(__name__)
+
+@config_entries.HANDLERS.register(DOMAIN)
+class LinktapFlowHandler(config_entries.ConfigFlow):
 
     VERSION = 1
+    def __init__(self):
+        super().__init__()
 
-    async def async_step_user(
-        self,
-        user_input: dict | None = None,
-    ) -> config_entries.FlowResult:
-        """Handle a flow initialized by the user."""
-        _errors = {}
+    async def async_step_user(self, user_input=None):
+        """Handle a flow start."""
+        _LOGGER.debug(f"Starting async_step_user of {DEFAULT_NAME}")
+
+        errors = None
+
         if user_input is not None:
-            host = user_input[CONF_HOST]
-            port = user_input[CONF_PORT]
+            await self.async_set_unique_id(secrets.token_hex(8))
+            self._abort_if_unique_id_configured()
+            return self.async_create_entry(title=DEFAULT_NAME, data=user_input)
 
-            # Test the connection before proceeding
-            try:
-                if not await self._test_connection(host, port):
-                    _errors["base"] = "cannot_connect"
-            except Exception as e:
-                LOGGER.error(f"Error testing connection: {e}")
-                _errors["base"] = "unknown"
+        new_user_input = {
+            vol.Required(GW_IP, default=GW_IP): str,
+        }
 
-            if not _errors:
-                return self.async_create_entry(
-                    title=host,
-                    data=user_input,
-                )
+        schema = vol.Schema(new_user_input)
 
-        return await self.async_show_form(
-            step_id="user",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(
-                        CONF_HOST,
-                        default=(user_input or {}).get(CONF_HOST, "192.168.0.100"),
-                    ): selector.TextSelector(
-                        selector.TextSelectorConfig(
-                            type=selector.TextSelectorType.TEXT
-                        ),
-                    ),
-                    vol.Required(CONF_PORT): selector.TextSelector(
-                        default=(user_input or {}).get(CONF_PORT, 9443),
-                        selector.TextSelectorConfig(
-                            type=selector.TextSelectorType.NUMBER
-                        ),
-                    ),
-                }
-            ),
-            errors=_errors
-        )
+        return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
