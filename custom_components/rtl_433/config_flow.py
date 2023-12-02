@@ -7,7 +7,12 @@ from homeassistant.const import CONF_PORT, CONF_HOST
 from homeassistant.helpers import selector
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
-from .api import IntegrationRtlApiClient
+from .api import (
+    IntegrationRtlApiClient,
+    IntegrationRtlApiClientAuthenticationError,
+    IntegrationRtlApiClientCommunicationError,
+    IntegrationRtlApiClientError,
+)
 from .const import DOMAIN, LOGGER
 
 class RtlFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
@@ -59,5 +64,5 @@ class RtlFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     ),
                 }
             ),
-            errors=_errors
+            errors=_errors  # Move this line to the end
         )
