@@ -1,4 +1,4 @@
-"""Binary sensor platform for rtl_433."""
+"""Binary sensor platform for Rtl_433."""
 from __future__ import annotations
 
 from homeassistant.components.binary_sensor import (
@@ -8,13 +8,13 @@ from homeassistant.components.binary_sensor import (
 )
 
 from .const import DOMAIN
-from .coordinator import rtlDataUpdateCoordinator
-from .entity import IntegrationrtlEntity
+from .coordinator import RtlDataUpdateCoordinator
+from .entity import IntegrationRtlEntity
 
 ENTITY_DESCRIPTIONS = (
     BinarySensorEntityDescription(
-        key="rtl_433",
-        name="RTL_433 Binary Sensor",
+        key="Rtl_433",
+        name="Rtl_433 Binary Sensor",
         device_class=BinarySensorDeviceClass.CONNECTIVITY,
     ),
 )
@@ -24,7 +24,7 @@ async def async_setup_entry(hass, entry, async_add_devices):
     """Set up the binary_sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_devices(
-        IntegrationrtlBinarySensor(
+        IntegrationRtlBinarySensor(
             coordinator=coordinator,
             entity_description=entity_description,
         )
@@ -32,12 +32,12 @@ async def async_setup_entry(hass, entry, async_add_devices):
     )
 
 
-class IntegrationrtlBinarySensor(IntegrationrtlEntity, BinarySensorEntity):
-    """rtl_433 binary_sensor class."""
+class IntegrationRtlBinarySensor(IntegrationRtlEntity, BinarySensorEntity):
+    """Rtl_433 binary_sensor class."""
 
     def __init__(
         self,
-        coordinator: rtlDataUpdateCoordinator,
+        coordinator: RtlDataUpdateCoordinator,
         entity_description: BinarySensorEntityDescription,
     ) -> None:
         """Initialize the binary_sensor class."""

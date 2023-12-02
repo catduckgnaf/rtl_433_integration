@@ -1,4 +1,4 @@
-"""DataUpdateCoordinator for rtl_433."""
+"""DataUpdateCoordinator for Rtl_433."""
 from __future__ import annotations
 
 from datetime import timedelta
@@ -12,13 +12,13 @@ from homeassistant.helpers.update_coordinator import (
 from homeassistant.exceptions import ConfigEntryAuthFailed
 
 from .api import (
-    IntegrationrtlApiClient,
-    IntegrationrtlApiClientAuthenticationError,
-    IntegrationrtlApiClientError,
+    IntegrationRtlApiClient,
+    IntegrationRtlApiClientAuthenticationError,
+    IntegrationRtlApiClientError,
 )
 from .const import DOMAIN, LOGGER
 
-class RTL433DataUpdateCoordinator(DataUpdateCoordinator):
+class Rtl433DataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the API."""
 
     config_entry: ConfigEntry
@@ -26,7 +26,7 @@ class RTL433DataUpdateCoordinator(DataUpdateCoordinator):
     def __init__(
         self,
         hass: HomeAssistant,
-        client: IntegrationrtlApiClient,
+        client: IntegrationRtlApiClient,
     ) -> None:
         """Initialize."""
         self.client = client
@@ -41,7 +41,7 @@ class RTL433DataUpdateCoordinator(DataUpdateCoordinator):
         """Update data via library."""
         try:
             return await self.client.async_get_data()
-        except IntegrationrtlApiClientAuthenticationError as exception:
+        except IntegrationRtlApiClientAuthenticationError as exception:
             raise ConfigEntryAuthFailed(exception) from exception
-        except IntegrationrtlApiClientError as exception:
+        except IntegrationRtlApiClientError as exception:
             raise UpdateFailed(exception) from exception

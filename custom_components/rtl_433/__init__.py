@@ -1,4 +1,4 @@
-"""Custom integration to integrate rtl_433 with Home Assistant."""
+"""Custom integration to integrate Rtl_433 with Home Assistant."""
 from __future__ import annotations
 
 from homeassistant.config_entries import ConfigEntry
@@ -6,9 +6,9 @@ from homeassistant.const import CONF_PORT, CONF_HOST, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .api import IntegrationrtlApiClient
+from .api import IntegrationRtlApiClient
 from .const import DOMAIN
-from .coordinator import RTL433DataUpdateCoordinator
+from .coordinator import Rtl433DataUpdateCoordinator
 
 PLATFORMS: list[Platform] = [
     Platform.SENSOR,
@@ -19,9 +19,9 @@ PLATFORMS: list[Platform] = [
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up this integration using UI."""
     hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN][entry.entry_id] = coordinator = RTL433DataUpdateCoordinator(
+    hass.data[DOMAIN][entry.entry_id] = coordinator = Rtl433DataUpdateCoordinator(
         hass=hass,
-        client=IntegrationrtlApiClient(
+        client=IntegrationRtlApiClient(
             host=entry.data[CONF_HOST],
             port=entry.data[CONF_PORT],
             session=async_get_clientsession(hass),

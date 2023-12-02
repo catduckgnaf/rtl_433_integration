@@ -1,19 +1,19 @@
-"""rtl_433_entity class."""
+"""Rtl_433_entity class."""
 from __future__ import annotations
 
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import ATTRIBUTION, DOMAIN, NAME, VERSION
-from .coordinator import rtlDataUpdateCoordinator
+from .coordinator import RtlDataUpdateCoordinator
 
 
-class IntegrationrtlEntity(CoordinatorEntity):
-    """rtl_433 class."""
+class IntegrationRtlEntity(CoordinatorEntity):
+    """Rtl_433 class."""
 
     _attr_attribution = ATTRIBUTION
 
-    def __init__(self, coordinator: rtlDataUpdateCoordinator) -> None:
+    def __init__(self, coordinator: RtlDataUpdateCoordinator) -> None:
         """Initialize."""
         super().__init__(coordinator)
         self._attr_unique_id = coordinator.config_entry.entry_id

@@ -1,4 +1,4 @@
-"""Adds config flow for rtL0433."""
+"""Adds config flow for Rtl0433."""
 from __future__ import annotations
 
 import voluptuous as vol
@@ -9,15 +9,15 @@ from homeassistant.helpers import selector
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
 from .api import (
-    IntegrationrtlApiClient,
-    IntegrationrtlApiClientAuthenticationError,
-    IntegrationrtlApiClientCommunicationError,
-    IntegrationrtlApiClientError,
+    IntegrationRtlApiClient,
+    IntegrationRtlApiClientAuthenticationError,
+    IntegrationRtlApiClientCommunicationError,
+    IntegrationRtlApiClientError,
 )
 from .const import DOMAIN, LOGGER
 
-class rtlFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
-    """Config flow for rtl_433."""
+class RtlFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
+    """Config flow for Rtl_433."""
 
     VERSION = 1
 

@@ -1,14 +1,14 @@
 {
-    "domain": "rtl_433",
+    "domain": "Rtl_433",
     "name": "RTL 433",
     "codeowners": [
         "@catduckgnaf"
     ],
     "config_flow": true,
     "dependencies": [],
-    "documentation": "https://github.com/catduckgnaf/rtl_433_integration",
+    "documentation": "https://github.com/catduckgnaf/Rtl_433_integration",
     "iot_class": "cloud_polling",
-    "issue_tracker": "https://github.com/catduckgnaf/rtl_433_integration/issues",
+    "issue_tracker": "https://github.com/catduckgnaf/Rtl_433_integration/issues",
     "requirements": [],
     "version": "0.1.0"
 }

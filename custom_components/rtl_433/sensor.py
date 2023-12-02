@@ -1,15 +1,15 @@
-"""Sensor platform for rtl_433."""
+"""Sensor platform for Rtl_433."""
 from __future__ import annotations
 
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
 
 from .const import DOMAIN
-from .coordinator import rtlDataUpdateCoordinator
-from .entity import IntegrationrtlEntity
+from .coordinator import RtlDataUpdateCoordinator
+from .entity import IntegrationRtlEntity
 
 ENTITY_DESCRIPTIONS = (
     SensorEntityDescription(
-        key="rtl_433",
+        key="Rtl_433",
         name="Integration Sensor",
         icon="mdi:format-quote-close",
     ),
@@ -20,18 +20,18 @@ async def async_setup_entry(hass, entry, async_add_devices):
     """Set up the sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     entities = [
-        IntegrationrtlSensor(coordinator, entity_description)
+        IntegrationRtlSensor(coordinator, entity_description)
         for entity_description in ENTITY_DESCRIPTIONS
     ]
     async_add_devices(entities)
 
 
-class IntegrationrtlSensor(IntegrationrtlEntity, SensorEntity):
-    """integration_rtl Sensor class."""
+class IntegrationRtlSensor(IntegrationRtlEntity, SensorEntity):
+    """integration_Rtl Sensor class."""
 
     def __init__(
         self,
-        coordinator: rtlDataUpdateCoordinator,
+        coordinator: RtlDataUpdateCoordinator,
         entity_description: SensorEntityDescription,
     ) -> None:
         """Initialize the sensor class."""
