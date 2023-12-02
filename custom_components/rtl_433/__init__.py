@@ -19,7 +19,7 @@ from homeassistant.helpers.update_coordinator import (DataUpdateCoordinator,
                                                       UpdateFailed)
 
 from .const import DOMAIN, GW_ID, GW_IP, NAME, PLATFORMS, TAP_ID
-from .rtl_433 import rtl433http
+from .linktap_local import LinktapLocal
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry)-> bool
 
     gateway_config = await linker.get_gw_config(gw_id)
     if "end_dev" not in gateway_config:
-        raise IntegrationError("RTL SDR needs to be updated")
+        raise IntegrationError("Linktap Gateway needs to be updated")
 
     devices = {
         "devs": gateway_config["end_dev"],
