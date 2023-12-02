@@ -1,4 +1,4 @@
-DOMAIN = "linktap"
+DOMAIN = "rtl_433"
 STATUS_CMD = 3
 START_CMD = 6
 STOP_CMD = 7
