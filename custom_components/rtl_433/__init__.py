@@ -4,9 +4,9 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import DOMAIN
+from .api import IntegrationRtlApiClient 
 from .coordinator import Rtl433DataUpdateCoordinator
 from .config_flow import RtlFlowHandler
-from .api import IntegrationRtlApiClient  # Add this import
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     """Set up the integration."""

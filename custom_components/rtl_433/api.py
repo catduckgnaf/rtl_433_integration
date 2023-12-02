@@ -1,6 +1,5 @@
 """rtl_433 API WS Client."""
 from __future__ import annotations
-
 import asyncio
 import socket
 import json
