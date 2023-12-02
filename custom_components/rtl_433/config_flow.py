@@ -12,7 +12,7 @@ from .const import DEFAULT_NAME, DOMAIN, GW_ID, GW_IP, NAME, TAP_ID
 _LOGGER = logging.getLogger(__name__)
 
 @config_entries.HANDLERS.register(DOMAIN)
-class RtlFlowHandler(config_entries.ConfigFlow):
+class LinktapFlowHandler(config_entries.ConfigFlow):
 
     VERSION = 1
     def __init__(self):
