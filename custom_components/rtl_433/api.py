@@ -56,7 +56,7 @@ class IntegrationRtlApiClient:
         data: dict | None = None,
         headers: dict | None = None,
     ) -> any:
-        """Wrapper for API calls."""
+        """Wrapper for API."""
         try:
             async with async_timeout.timeout(10):
                 response = await self._session.request(
