@@ -19,7 +19,7 @@ from homeassistant.helpers.update_coordinator import (DataUpdateCoordinator,
                                                       UpdateFailed)
 
 from .const import DOMAIN, GW_ID, GW_IP, NAME, PLATFORMS, TAP_ID
-from .linktap_local import LinktapLocal
+from .rtl_433 import rtl433http
 
 _LOGGER = logging.getLogger(__name__)
 

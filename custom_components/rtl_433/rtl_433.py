@@ -12,7 +12,7 @@ from .const import (CONFIG_CMD, DEFAULT_TIME, DISMISS_ALERT_CMD, START_CMD,
 
 _LOGGER = logging.getLogger(__name__)
 
-class LinktapLocal:
+class rtl433http:
 
     ip = False
     gw_id = False
