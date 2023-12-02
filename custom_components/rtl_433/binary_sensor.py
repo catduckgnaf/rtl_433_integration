@@ -16,7 +16,7 @@ from homeassistant.util import slugify
 
 _LOGGER = logging.getLogger(__name__)
 
-from .const import DOMAIN, SDR_ID, WS_PORT, WS_IP, WS_HOST, MANUFACTURER, NAME, RF_ID
+from .const import DOMAIN, GW_ID, WS_HOST, MANUFACTURER, NAME, TAP_ID
 
 
 async def async_setup_entry(
@@ -57,11 +57,11 @@ class RtlBinarySensor(CoordinatorEntity, BinarySensorEntity):
         self._name = tap[NAME] + " " + name
         self._id = self._name
         self._data_check_attribute = data_attribute
-        self.rf_id = tap[RF_ID]
+        self.tap_id = tap[TAP_ID]
         self.tap_name = tap[NAME]
         self.tap_api = coordinator.tap_api
         self.platform = "binary_sensor"
-        self._attr_unique_id = slugify(f"{DOMAIN}_{self.platform}_{data_attribute}_{self.rf_id}")
+        self._attr_unique_id = slugify(f"{DOMAIN}_{self.platform}_{data_attribute}_{self.tap_id}")
         if device_class:
             self._attr_device_class = device_class
         if icon:
@@ -70,11 +70,11 @@ class RtlBinarySensor(CoordinatorEntity, BinarySensorEntity):
         self._attr_device_info = DeviceInfo(
             #entry_type=DeviceEntryType.SERVICE,
             identifiers={
-                (DOMAIN, tap[RF_ID])
+                (DOMAIN, tap[TAP_ID])
             },
             name=tap[NAME],
             manufacturer=MANUFACTURER,
-            model=tap[RF_ID],
+            model=tap[TAP_ID],
             configuration_url="http://" + tap[WS_HOST] + "/"
         )
 
@@ -104,7 +104,7 @@ class RtlBinarySensor(CoordinatorEntity, BinarySensorEntity):
 
     async def _dismiss_alerts(self):
         _LOGGER.debug(f"Dismissing all alerts for {self.entity_id}")
-        await self.tap_api.dismiss_alert(self.coordinator.get_sdr_id(), self.rf_id)
+        await self.tap_api.dismiss_alert(self.coordinator.get_gw_id(), self.tap_id)
 
     """alert: type of alert
     0: all types of alert.
@@ -120,7 +120,7 @@ class RtlBinarySensor(CoordinatorEntity, BinarySensorEntity):
         alert_id = self.alert_lookup(alert_type)
         if alert_id is not None:
             _LOGGER.debug(f"Dismissing {alert_type} alert for {self.entity_id}")
-            await self.tap_api.dismiss_alert(self.coordinator.get_sdr_id(), self.rf_id)
+            await self.tap_api.dismiss_alert(self.coordinator.get_gw_id(), self.tap_id)
         else:
             _LOGGER.debug("No matching alert found. Do nothing")
 

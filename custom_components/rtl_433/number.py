@@ -12,8 +12,8 @@ from homeassistant.util import slugify
 
 _LOGGER = logging.getLogger(__name__)
 
-from .const import (DEFAULT_TIME, DEFAULT_VOL, DOMAIN, SDR_ID, WS_HOST, WS_PORT, WS_IP,
-                    MANUFACTURER, NAME, RF_ID)
+from .const import (DEFAULT_TIME, DEFAULT_VOL, DOMAIN, GW_ID, WS_HOST,
+                    MANUFACTURER, NAME, TAP_ID)
 
 
 async def async_setup_entry(
