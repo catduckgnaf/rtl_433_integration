@@ -4,7 +4,7 @@ dismiss_alert:
   description: Dismiss an alert
   target:
     entity:
-      integration: rtl_433
+      integration: lintkap
       domain: binary_sensor
 
 dismiss_alerts:
@@ -12,5 +12,5 @@ dismiss_alerts:
   description: Dismiss all alerts
   target:
     entity:
-      integration: rtl_433
+      integration: linktap
       domain: binary_sensor
