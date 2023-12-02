@@ -1,5 +1,6 @@
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.components.sensor import PLATFORM as SENSOR_PLATFORM
+from homeassistant.components.binary_sensor import PLATFORM as BINARY_SENSOR_PLATFORM
 from homeassistant.const import PLATFORM, CONF_HOST, CONF_PORT
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
