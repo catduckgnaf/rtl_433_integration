@@ -9,7 +9,7 @@ from .entity import IntegrationRtlEntity
 
 ENTITY_DESCRIPTIONS = (
     SensorEntityDescription(
-        key="Rtl_433",
+        key="rtl_433",
         name="Integration Sensor",
         icon="mdi:format-quote-close",
     ),
