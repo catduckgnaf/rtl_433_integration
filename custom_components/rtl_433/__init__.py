@@ -1,4 +1,3 @@
-"""Custom integration to integrate rtl_433 with Home Assistant."""
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
@@ -7,6 +6,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from .const import DOMAIN
 from .coordinator import Rtl433DataUpdateCoordinator
 from .config_flow import RtlFlowHandler
+from .api import IntegrationRtlApiClient  # Add this import
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     """Set up the integration."""
