@@ -1,4 +1,4 @@
-"""Sensor platform for Rtl_433."""
+"""Sensor platform for rtl_433."""
 from __future__ import annotations
 
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription

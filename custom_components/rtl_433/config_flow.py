@@ -1,4 +1,4 @@
-"""Adds config flow for Rtl0433."""
+"""Adds config flow for rtl_433."""
 from __future__ import annotations
 
 import voluptuous as vol

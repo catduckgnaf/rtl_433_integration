@@ -1,4 +1,4 @@
-"""DataUpdateCoordinator for Rtl_433."""
+"""DataUpdateCoordinator for rtl_433."""
 from __future__ import annotations
 
 from datetime import timedelta

@@ -1,4 +1,4 @@
-"""Custom integration to integrate Rtl_433 with Home Assistant."""
+"""Custom integration to integrate rtl_433 with Home Assistant."""
 from __future__ import annotations
 
 from homeassistant.config_entries import ConfigEntry
