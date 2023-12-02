@@ -5,6 +5,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_PORT, CONF_HOST, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+import async_timeout
 
 from .api import IntegrationRtlApiClient
 from .const import DOMAIN
