@@ -5,7 +5,6 @@ import random
 import re
 import aiohttp
 import websocket
-import websocket_client
 from json.decoder import JSONDecodeError
 import websocket
 
