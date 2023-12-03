@@ -17,7 +17,7 @@ from homeassistant.util import slugify
 _LOGGER = logging.getLogger(__name__)
 
 
-from .const import DOMAIN, WS_HOST, MANUFACTURER, NAME, BINARY_SENSORS
+from .const import DOMAIN, WS_HOST, MANUFACTURER, NAME, DEVICE_ID, PROTOCOL_ID, BINARY_SENSORS
 from .entity import *
 
 
@@ -25,11 +25,6 @@ async def async_setup_entry(
     hass, config, async_add_entities, discovery_info=None
 ):
     """Setup the sensor platform."""
-    #config_id = config.unique_id
-    #_LOGGER.debug(f"Configuring binary sensor entities for config {config_id}")
-    #if config_id not in hass.data[DOMAIN]:
-    #    await asyncio.sleep(random.randint(1,3))
-    #devices = hass.data[DOMAIN][config_id]["conf"]["devices"]
     devices = hass.data[DOMAIN][config.entry_id]["conf"]["devices"]
     binary_sensors = []
     for device in devices:
@@ -71,7 +66,7 @@ class RtlBinarySensor(CoordinatorEntity, BinarySensorEntity):
             name=device[NAME],
             manufacturer=MANUFACTURER,
             model=device[DEVICE_ID],
-            configuration_url="http://" + [WS_HOST] + "/"
+            configuration_url="http://" + [WS_HOST]
         )
 
     @property
@@ -84,34 +79,9 @@ class RtlBinarySensor(CoordinatorEntity, BinarySensorEntity):
         return f"{MANUFACTURER} {self._name}"
 
     @property
-    def extra_state_attributes(self):
-        return self._attrs
-
-    @property
-    def state(self):
-        attributes = self.coordinator.data
-        data_attr = attributes[self._data_check_attribute]
-        state = "on" if data_attr else "off"
-        return state
-
-    @property
     def device_info(self) -> DeviceInfo:
         return self._attr_device_info
 
-    async def _dismiss_alerts(self):
-        _LOGGER.debug(f"Dismissing all alerts for {self.entity_id}")
-        await self.device_api.dismiss_alert(self.coordinator.get_sdr_id(), self.device_id)
-
-
-    async def _dismiss_alert(self):
-        split_name = self._data_check_attribute.split("_")
-        alert_type = split_name[len(split_name)-1]
-        alert_id = self.alert_lookup(alert_type)
-        if alert_id is not None:
-            _LOGGER.debug(f"Dismissing {alert_type} alert for {self.entity_id}")
-            await self.device_api.dismiss_alert(self.coordinator.get_sdr_id(), self.device_id)
-        else:
-            _LOGGER.debug("No matching alert found. Do nothing")
 
     def alert_lookup(self, alert_name):
         alerts = {
