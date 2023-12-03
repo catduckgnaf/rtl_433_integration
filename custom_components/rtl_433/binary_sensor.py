@@ -27,20 +27,14 @@ async def async_setup_entry(
     #_LOGGER.debug(f"Configuring binary sensor entities for config {config_id}")
     #if config_id not in hass.data[DOMAIN]:
     #    await asyncio.sleep(random.randint(1,3))
-    #taps = hass.data[DOMAIN][config_id]["conf"]["taps"]
-    taps = hass.data[DOMAIN][config.entry_id]["conf"]["taps"]
+    #devices = hass.data[DOMAIN][config_id]["conf"]["devices"]
+    devices = hass.data[DOMAIN][config.entry_id]["conf"]["devices"]
     binary_sensors = []
-    for tap in taps:
-        coordinator = tap["coordinator"]
-        _LOGGER.debug(f"Configuring binary sensors for tap {tap}")
-        binary_sensors.append(RtlBinarySensor(coordinator, hass, tap=tap, name="Is Linked", data_attribute="is_rf_linked"))
-        binary_sensors.append(RtlBinarySensor(coordinator, hass, tap=tap, data_attribute="is_fall", icon="mdi:meter-electric-outline"))
-        binary_sensors.append(RtlBinarySensor(coordinator, hass, tap=tap, data_attribute="is_cutoff", icon="mdi:scissors-cutting"))
-        binary_sensors.append(RtlBinarySensor(coordinator, hass, tap=tap, name="Is Leaking", data_attribute="is_leak", icon="mdi:leak"))
-        binary_sensors.append(RtlBinarySensor(coordinator, hass, tap=tap, name="Is Clogged", data_attribute="is_clog",  icon="mdi:leak-off"))
-        binary_sensors.append(RtlBinarySensor(coordinator, hass, tap=tap, data_attribute="is_broken", icon="mdi:scissors-cutting"))
-        binary_sensors.append(RtlBinarySensor(coordinator, hass, tap=tap, data_attribute="is_manual_mode", icon="mdi:account-switch"))
-        binary_sensors.append(RtlBinarySensor(coordinator, hass, tap=tap, data_attribute="is_watering", icon="mdi:water"))
+    for device in devices:
+        coordinator = device["coordinator"]
+        _LOGGER.debug(f"Configuring binary sensors for Device {device}")
+        binary_sensors.append(RtlBinarySensor(coordinator, hass, device=device, name="closed", data_attribute="closed"))
+        binary_sensors.append(RtlBinarySensor(coordinator, hass, device=device, data_attribute="tamper", icon="mdi:meter-electric-outline"))
     async_add_entities(binary_sensors, True)
 
     platform = entity_platform.async_get_current_platform()
@@ -49,19 +43,19 @@ async def async_setup_entry(
 
 class RtlBinarySensor(CoordinatorEntity, BinarySensorEntity):
 
-    def __init__(self, coordinator: DataUpdateCoordinator, hass, tap, data_attribute, name=False, device_class=False, icon=False):
+    def __init__(self, coordinator: DataUpdateCoordinator, hass, device, data_attribute, name=False, device_class=False, icon=False):
         super().__init__(coordinator)
         self._state = None
         if not name:
             name = data_attribute.replace("_", " ").title()
-        self._name = tap[NAME] + " " + name
+        self._name = device[NAME] + " " + name
         self._id = self._name
         self._data_check_attribute = data_attribute
-        self.tap_id = tap[TAP_ID]
-        self.tap_name = tap[NAME]
-        self.tap_api = coordinator.tap_api
+        self.device_id = device[DEVICE_ID]
+        self.device_name = device[NAME]
+        self.device_api = coordinator.device_api
         self.platform = "binary_sensor"
-        self._attr_unique_id = slugify(f"{DOMAIN}_{self.platform}_{data_attribute}_{self.tap_id}")
+        self._attr_unique_id = slugify(f"{DOMAIN}_{self.platform}_{data_attribute}_{self.device_id}")
         if device_class:
             self._attr_device_class = device_class
         if icon:
@@ -70,12 +64,12 @@ class RtlBinarySensor(CoordinatorEntity, BinarySensorEntity):
         self._attr_device_info = DeviceInfo(
             #entry_type=DeviceEntryType.SERVICE,
             identifiers={
-                (DOMAIN, tap[TAP_ID])
+                (DOMAIN, device[DEVICE_ID])
             },
-            name=tap[NAME],
+            name=device[NAME],
             manufacturer=MANUFACTURER,
-            model=tap[TAP_ID],
-            configuration_url="http://" + tap[WS_HOST] + "/"
+            model=device[DEVICE_ID],
+            configuration_url="http://" + [WS_HOST] + "/"
         )
 
     @property
@@ -104,34 +98,24 @@ class RtlBinarySensor(CoordinatorEntity, BinarySensorEntity):
 
     async def _dismiss_alerts(self):
         _LOGGER.debug(f"Dismissing all alerts for {self.entity_id}")
-        await self.tap_api.dismiss_alert(self.coordinator.get_gw_id(), self.tap_id)
+        await self.device_api.dismiss_alert(self.coordinator.get_gw_id(), self.device_id)
 
-    """alert: type of alert
-    0: all types of alert.
-    1: device fall alert.
-    2: valve shut-down failure alert.
-    3: water cut-off alert.
-    4: unusually high flow alert.
-    5: unusually low flow alert.
-    """
+
     async def _dismiss_alert(self):
         split_name = self._data_check_attribute.split("_")
         alert_type = split_name[len(split_name)-1]
         alert_id = self.alert_lookup(alert_type)
         if alert_id is not None:
             _LOGGER.debug(f"Dismissing {alert_type} alert for {self.entity_id}")
-            await self.tap_api.dismiss_alert(self.coordinator.get_gw_id(), self.tap_id)
+            await self.device_api.dismiss_alert(self.coordinator.get_gw_id(), self.device_id)
         else:
             _LOGGER.debug("No matching alert found. Do nothing")
 
     def alert_lookup(self, alert_name):
         alerts = {
-            "all" :0,
-            "fall": 1,
-            "shutdown" :2,
-            "cutoff": 3,
-            "high_flow": 4,
-            "low_flow": 5
+            "open" :0,
+            "closed": 1,
+            "tamper": 2
         }
         if alert_name in alerts:
             return alerts[alert_name]
