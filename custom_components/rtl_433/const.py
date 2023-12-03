@@ -238,8 +238,6 @@ BINARY_SENSORS: Final[dict[str, RTL433BinarySensorEntityDescription]] = {
         name="Alarm",
         key="alarm",
         device_class=BinarySensorDeviceClass.SAFETY,
-        entity_category=EntityCategory.DIAGNOSTIC,
-        entity_registry_enabled_default=False,
     ),
 }
 
