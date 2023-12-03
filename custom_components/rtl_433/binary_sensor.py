@@ -16,6 +16,7 @@ from homeassistant.util import slugify
 
 _LOGGER = logging.getLogger(__name__)
 
+
 from .const import DOMAIN, WS_HOST, MANUFACTURER, NAME
 
 
