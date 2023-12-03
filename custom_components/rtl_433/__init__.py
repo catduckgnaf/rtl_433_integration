@@ -43,7 +43,7 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry) -> boo
     }
     protocol_list = []
     for counter, protocol_id in enumerate(devices["devs"]):
-        coordinator = RtlCoordinator(hass, linker, coordinator_conf, protocol_id)
+        coordinator = RtlCoordinator(hass, coordinator_conf, protocol_id)
         device_name = devices["names"][counter]
         protocol_list.append({
             NAME: device_name,
