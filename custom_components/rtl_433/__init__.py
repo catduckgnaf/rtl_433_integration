@@ -18,7 +18,7 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import (DataUpdateCoordinator,
                                                       UpdateFailed)
 
-from .const import DOMAIN, WS_HOST, WS_IP, WS_PORT, NAME, PLATFORMS, WS_ID
+from .const import DOMAIN, WS_IP, WS_PORT, NAME, PLATFORMS, WS_ID
 from .rtl_433 import rtl433http
 
 _LOGGER = logging.getLogger(__name__)
@@ -29,10 +29,11 @@ async def async_setup(_hass, _config):
 async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry)-> bool:
     """Set up the platform."""
 
-    ws_host = entry.data.get(WS_HOST)
+    ws_ip = entry.data.get(WS_IP)
+    ws_port = entry.data.get(WS_PORT)
 
     linker = rtl433http()
-    linker.set_ip(ws_host)
+    linker.set_ip(ws_ip)
     try:
         gw_id = await linker.get_gw_id()
     except JSONDecodeError:
@@ -56,30 +57,33 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry)-> bool
     _LOGGER.debug(f"Found devices: {devices}")
 
     coordinator_conf = {
-        WS_HOST: ws_host,
+        WS_IP: ws_ip,
+        WS_PORT: ws_port,
         GW_ID: gw_id,
     }
     counter = 0
     tap_list = []
     for tap_id in devices["devs"]:
-        coordinator = LinktapCoordinator(hass, linker, coordinator_conf, tap_id)
+        coordinator = RtlCoordinator(hass, linker, coordinator_conf, tap_id)
         device_name = devices["names"][counter]
         tap_list.append({
             NAME: device_name,
             TAP_ID: tap_id,
-            WS_HOST: ws_host,
+            WS_IP: ws_ip,
+            WS_PORT: ws_port,
             "coordinator": coordinator
         })
         counter = counter + 1
         await coordinator.async_config_entry_first_refresh()
         _LOGGER.debug(f"Coordinator has synced for {tap_id}")
-    _LOGGER.debug(f"List of Taps: {tap_list}")
+    _LOGGER.debug(f"List of Devices: {tap_list}")
 
     vol_unit = gateway_config["vol_unit"]
     _LOGGER.debug(f"Setting volume unit to {vol_unit}")
 
     conf = {
-        WS_HOST: ws_host,
+        WS_IP: ws_ip,
+        WS_PORT: ws_port,
         GW_ID: gw_id,
         "taps": tap_list,
         "vol_unit": vol_unit,

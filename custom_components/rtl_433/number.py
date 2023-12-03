@@ -12,7 +12,7 @@ from homeassistant.util import slugify
 
 _LOGGER = logging.getLogger(__name__)
 
-from .const import (DEFAULT_TIME, DEFAULT_VOL, DOMAIN, WS_HOST,
+from .const import (DEFAULT_TIME, DEFAULT_VOL, DOMAIN, WS_IP, WS_PORT,
                     MANUFACTURER, NAME)
 
 

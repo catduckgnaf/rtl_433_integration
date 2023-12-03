@@ -15,7 +15,7 @@ from homeassistant.util import slugify
 
 _LOGGER = logging.getLogger(__name__)
 
-from .const import DOMAIN, WS_HOST, MANUFACTURER, NAME
+from .const import DOMAIN, WS_IP, WS_PORT, MANUFACTURER, NAME
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -33,21 +33,21 @@ async def async_setup_entry(
     vol_unit = hass.data[DOMAIN][config.entry_id]["conf"]["vol_unit"]
     sensors = []
     for tap in taps:
-        _LOGGER.debug(f"Configuring sensors for tap {tap}")
+        _LOGGER.debug(f"Configuring sensors for rtl {tap}")
         coordinator = tap["coordinator"]
-        sensors.append(LinktapSensor(coordinator, hass, tap, data_attribute="signal", unit="%", icon="mdi:percent-circle"))
-        sensors.append(LinktapSensor(coordinator, hass, tap, data_attribute="battery", unit="%", device_class="battery"))
-        sensors.append(LinktapSensor(coordinator, hass, tap, data_attribute="total_duration", unit="s", icon="mdi:clock"))
-        sensors.append(LinktapSensor(coordinator, hass, tap, data_attribute="remain_duration", unit="s", icon="mdi:clock"))
-        sensors.append(LinktapSensor(coordinator, hass, tap, data_attribute="speed", unit=f"{vol_unit}pm", icon="mdi:speedometer"))
-        sensors.append(LinktapSensor(coordinator, hass, tap, data_attribute="volume", unit=vol_unit, icon="mdi:water-percent"))
-        sensors.append(LinktapSensor(coordinator, hass, tap, data_attribute="volume_limit", unit=vol_unit, icon="mdi:water-percent"))
-        sensors.append(LinktapSensor(coordinator, hass, tap, data_attribute="failsafe_duration", unit="s", icon="mdi:clock"))
-        sensors.append(LinktapSensor(coordinator, hass, tap, data_attribute="plan_mode", unit="mode", icon="mdi:note"))
-        sensors.append(LinktapSensor(coordinator, hass, tap, data_attribute="plan_sn", unit="sn", icon="mdi:note"))
+        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="signal", unit="%", icon="mdi:percent-circle"))
+        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="battery", unit="%", device_class="battery"))
+        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="total_duration", unit="s", icon="mdi:clock"))
+        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="remain_duration", unit="s", icon="mdi:clock"))
+        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="speed", unit=f"{vol_unit}pm", icon="mdi:speedometer"))
+        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="volume", unit=vol_unit, icon="mdi:water-percent"))
+        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="volume_limit", unit=vol_unit, icon="mdi:water-percent"))
+        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="failsafe_duration", unit="s", icon="mdi:clock"))
+        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="plan_mode", unit="mode", icon="mdi:note"))
+        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="plan_sn", unit="sn", icon="mdi:note"))
     async_add_entities(sensors, True)
 
-class LinktapSensor(CoordinatorEntity, SensorEntity):
+class Rtl433Sensor(CoordinatorEntity, SensorEntity):
 
     def __init__(self, coordinator: DataUpdateCoordinator, hass, tap, data_attribute, unit, device_class=False, icon=False):
         super().__init__(coordinator)
@@ -76,7 +76,7 @@ class LinktapSensor(CoordinatorEntity, SensorEntity):
             name=tap[NAME],
             manufacturer=MANUFACTURER,
             model=tap[TAP_ID],
-            configuration_url="http://" + tap[WS_HOST] + "/"
+            configuration_url="http://" + [WS_IP] + ":" + [WS_PORT]
         )
 
     @property
