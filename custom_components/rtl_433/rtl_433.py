@@ -131,33 +131,5 @@ class rtl433http:
             "devs": config["end_dev"],
             "names": config["dev_name"],
         }
-
-    """This is potentially a little hacky, as it actually sends a malformatted request to the gateway.
-    The ID of the gateway is returned in this malformed request, so lets use it for good and not evil."""
-    async def get_sdr_id(self):
-        data = {
-            "cmd":STATUS_CMD
-        }
-        status = await self._request(data)
-        return status["sdr_id"]
-
-    """alert: type of alert
-    0: all types of alert.
-    1: device fall alert.
-    2: valve shut-down failure alert.
-    3: water cut-off alert.
-    4: unusually high flow alert.
-    5: unusually low flow alert.
-    """
-    async def dismiss_alert(self, sdr_id, dev_id, alert_id=False):
-        if not alert_id:
-            alert_id = 0
-        data = {
-            "cmd": DISMISS_ALERT_CMD,
-            "sdr_id": sdr_id,
-            "dev_id": dev_id,
-            "alert": alert_id,
-            "enable": True
-        }
         status = await self._request(data)
         return status["ret"] == 0
