@@ -70,10 +70,10 @@ class rtl433http:
         return response
 
     async def fetch_data(self, sdr_id, dev_id):
-        status = await self.get_tap_status(sdr_id, dev_id)
+        status = await self.get_protocol_status(sdr_id, dev_id)
         return status
 
-    async def get_tap_status(self, sdr_id, dev_id):
+    async def get_protocol_status(self, sdr_id, dev_id):
         data = {
             "cmd": STATUS_CMD,
             "sdr_id": sdr_id,

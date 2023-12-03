@@ -24,27 +24,27 @@ async def async_setup_entry(
     #_LOGGER.debug(f"Configuring number entities for config {config_id}")
     #if config_id not in hass.data[DOMAIN]:
     #    await asyncio.sleep(random.randint(1,3))
-    #taps = hass.data[DOMAIN][config_id]["conf"]["taps"]
-    taps = hass.data[DOMAIN][config.entry_id]["conf"]["taps"]
+    #protocols = hass.data[DOMAIN][config_id]["conf"]["protocols"]
+    protocols = hass.data[DOMAIN][config.entry_id]["conf"]["protocols"]
     numbers = []
-    for tap in taps:
-        """For each tap, we set a number for duration and volume"""
-        _LOGGER.debug(f"Configuring numbers for tap {tap}")
-        coordinator = coordinator = tap["coordinator"]
-        numbers.append(RtlNumber(coordinator, hass, tap, "Watering Duration", "mdi:clock", "m"))
-        numbers.append(RtlNumber(coordinator, hass, tap, "Watering Volume", "mdi:water", hass.data[DOMAIN][config.entry_id]["conf"]["vol_unit"]))
+    for protocol in protocols:
+        """For each protocol, we set a number for duration and volume"""
+        _LOGGER.debug(f"Configuring numbers for protocol {protocol}")
+        coordinator = coordinator = protocol["coordinator"]
+        numbers.append(RtlNumber(coordinator, hass, protocol, "Watering Duration", "mdi:clock", "m"))
+        numbers.append(RtlNumber(coordinator, hass, protocol, "Watering Volume", "mdi:water", hass.data[DOMAIN][config.entry_id]["conf"]["vol_unit"]))
 
     async_add_entities(numbers, True)
 
 class RtlNumber(CoordinatorEntity, RestoreNumber):
-    def __init__(self, coordinator: DataUpdateCoordinator, hass, tap, number_suffix, icon, unit_of_measurement):
+    def __init__(self, coordinator: DataUpdateCoordinator, hass, protocol, number_suffix, icon, unit_of_measurement):
         super().__init__(coordinator)
         self._state = None
-        self._name = tap[NAME]
+        self._name = protocol[NAME]
         self._id = self._name
-        self.tap_id = tap[TAP_ID]
+        self.protocol_id = protocol[protocol_ID]
         self.platform = "number"
-        self._attr_unique_id = slugify(f"{DOMAIN}_{self.platform}_{self.tap_id}_{number_suffix.replace(' ', '_')}")
+        self._attr_unique_id = slugify(f"{DOMAIN}_{self.platform}_{self.protocol_id}_{number_suffix.replace(' ', '_')}")
         self._attr_native_min_value = 0
         self._attr_native_max_value = 120
         self._attr_native_step = 5
@@ -53,12 +53,12 @@ class RtlNumber(CoordinatorEntity, RestoreNumber):
         self.number_suffix = number_suffix
         self._attr_device_info = DeviceInfo(
             identifiers={
-                (DOMAIN, tap[TAP_ID])
+                (DOMAIN, protocol[protocol_ID])
             },
-            name=tap[NAME],
+            name=protocol[NAME],
             manufacturer=MANUFACTURER,
-            model=tap[TAP_ID],
-            configuration_url="http://" + tap[WS_HOST] + "/"
+            model=protocol[protocol_ID],
+            configuration_url="http://" + protocol[WS_HOST] + "/"
         )
 
         self._attrs = {}

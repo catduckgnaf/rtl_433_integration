@@ -61,19 +61,19 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry)-> bool
     }
     counter = 0
     protocol_list = []
-    for tap_id in devices["devs"]:
-        coordinator = RtlCoordinator(hass, linker, coordinator_conf, tap_id)
+    for protocol_id in devices["devs"]:
+        coordinator = RtlCoordinator(hass, linker, coordinator_conf, protocol_id)
         device_name = devices["names"][counter]
-        tap_list.append({
+        protocol_list.append({
             NAME: device_name,
-            TAP_ID: tap_id,
+            protocol_ID: protocol_id,
             WS_HOST: ws_host,
             "coordinator": coordinator
         })
         counter = counter + 1
         await coordinator.async_config_entry_first_refresh()
-        _LOGGER.debug(f"Coordinator has synced for {tap_id}")
-    _LOGGER.debug(f"List of Devices: {tap_list}")
+        _LOGGER.debug(f"Coordinator has synced for {protocol_id}")
+    _LOGGER.debug(f"List of Devices: {protocol_list}")
 
     vol_unit = gateway_config["vol_unit"]
     _LOGGER.debug(f"Setting volume unit to {vol_unit}")
@@ -103,7 +103,7 @@ async def async_remove_config_entry_device(hass: core.HomeAssistant, entry: Conf
     device_registry(hass).async_remove_device(device.id)
     return True
 
-class RtltapCoordinator(DataUpdateCoordinator):
+class RtlprotocolCoordinator(DataUpdateCoordinator):
     def __init__(self, hass, sdr, conf, protocol_id):
         super().__init__(
             hass,
@@ -124,7 +124,7 @@ class RtltapCoordinator(DataUpdateCoordinator):
         so entities can quickly look up their data.
         """
 
-        #tap_id = self.conf["taps"][TAP_ID]
+        #protocol_id = self.conf["protocols"][protocol_ID]
         sdr_id = self.conf[sdr_ID]
 
         try:

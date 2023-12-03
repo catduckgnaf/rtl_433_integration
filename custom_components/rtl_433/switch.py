@@ -30,26 +30,26 @@ async def async_setup_entry(
     #_LOGGER.debug(f"Configuring switch entities for config {config_id}")
     #if config_id not in hass.data[DOMAIN]:
     #    await asyncio.sleep(random.randint(1,3))
-    #taps = hass.data[DOMAIN][config_id]["conf"]["taps"]
-    taps = hass.data[DOMAIN][config.entry_id]["conf"]["taps"]
+    #protocols = hass.data[DOMAIN][config_id]["conf"]["protocols"]
+    protocols = hass.data[DOMAIN][config.entry_id]["conf"]["protocols"]
     switches = []
-    for tap in taps:
-        coordinator = tap["coordinator"]
-        _LOGGER.debug(f"Configuring switch for tap {tap}")
-        switches.append(RtlSwitch(coordinator, hass, tap))
+    for protocol in protocols:
+        coordinator = protocol["coordinator"]
+        _LOGGER.debug(f"Configuring switch for protocol {protocol}")
+        switches.append(RtlSwitch(coordinator, hass, protocol))
     async_add_entities(switches, True)
 
 class RtlSwitch(CoordinatorEntity, SwitchEntity):
-    def __init__(self, coordinator: DataUpdateCoordinator, hass, tap):
+    def __init__(self, coordinator: DataUpdateCoordinator, hass, protocol):
         super().__init__(coordinator)
         self._state = None
-        self._name = tap[NAME]
-        self._id = tap[TAP_ID]
-        self.tap_id = tap[TAP_ID]
-        self.tap_api = coordinator.tap_api
+        self._name = protocol[NAME]
+        self._id = protocol[protocol_ID]
+        self.protocol_id = protocol[protocol_ID]
+        self.protocol_api = coordinator.protocol_api
         self.platform = "switch"
         self.hass = hass
-        self._attr_unique_id = slugify(f"{DOMAIN}_{self.platform}_{self.tap_id}")
+        self._attr_unique_id = slugify(f"{DOMAIN}_{self.platform}_{self.protocol_id}")
         self._attr_icon = "mdi:water-pump"
         self._attrs = {
             "data": self.coordinator.data,
@@ -58,7 +58,7 @@ class RtlSwitch(CoordinatorEntity, SwitchEntity):
         }
         self._attr_device_info = DeviceInfo(
             identifiers={
-                (DOMAIN, tap[TAP_ID])
+                (DOMAIN, protocol[protocol_ID])
             },
             name=[NAME],
             manufacturer=MANUFACTURER,
@@ -93,12 +93,12 @@ class RtlSwitch(CoordinatorEntity, SwitchEntity):
         #if volume != DEFAULT_VOL:
         #    watering_volume = volume
         gw_id = self.coordinator.get_gw_id()
-        attributes = await self.tap_api.turn_on(gw_id, self.tap_id, seconds, self.get_watering_volume())
+        attributes = await self.protocol_api.turn_on(gw_id, self.protocol_id, seconds, self.get_watering_volume())
         await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs):
         gw_id = self.coordinator.get_gw_id()
-        attributes = await self.tap_api.turn_off(gw_id, self.tap_id)
+        attributes = await self.protocol_api.turn_off(gw_id, self.protocol_id)
         await self.coordinator.async_request_refresh()
 
     def get_watering_duration(self):

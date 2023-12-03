@@ -27,40 +27,40 @@ async def async_setup_entry(
     #_LOGGER.debug(f"Configuring sensor entities for config {config_id}")
     #if config_id not in hass.data[DOMAIN]:
     #    await asyncio.sleep(random.randint(1,3))
-    #taps = hass.data[DOMAIN][config_id]["conf"]["taps"]
-    taps = hass.data[DOMAIN][config.entry_id]["conf"]["taps"]
+    #protocols = hass.data[DOMAIN][config_id]["conf"]["protocols"]
+    protocols = hass.data[DOMAIN][config.entry_id]["conf"]["protocols"]
     #vol_unit = hass.data[DOMAIN][config_id]["conf"]["vol_unit"]
     vol_unit = hass.data[DOMAIN][config.entry_id]["conf"]["vol_unit"]
     sensors = []
-    for tap in taps:
-        _LOGGER.debug(f"Configuring sensors for rtl {tap}")
-        coordinator = tap["coordinator"]
-        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="signal", unit="%", icon="mdi:percent-circle"))
-        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="battery", unit="%", device_class="battery"))
-        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="total_duration", unit="s", icon="mdi:clock"))
-        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="remain_duration", unit="s", icon="mdi:clock"))
-        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="speed", unit=f"{vol_unit}pm", icon="mdi:speedometer"))
-        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="volume", unit=vol_unit, icon="mdi:water-percent"))
-        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="volume_limit", unit=vol_unit, icon="mdi:water-percent"))
-        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="failsafe_duration", unit="s", icon="mdi:clock"))
-        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="plan_mode", unit="mode", icon="mdi:note"))
-        sensors.append(Rtl433Sensor(coordinator, hass, tap, data_attribute="plan_sn", unit="sn", icon="mdi:note"))
+    for protocol in protocols:
+        _LOGGER.debug(f"Configuring sensors for rtl {protocol}")
+        coordinator = protocol["coordinator"]
+        sensors.append(Rtl433Sensor(coordinator, hass, protocol, data_attribute="signal", unit="%", icon="mdi:percent-circle"))
+        sensors.append(Rtl433Sensor(coordinator, hass, protocol, data_attribute="battery", unit="%", device_class="battery"))
+        sensors.append(Rtl433Sensor(coordinator, hass, protocol, data_attribute="total_duration", unit="s", icon="mdi:clock"))
+        sensors.append(Rtl433Sensor(coordinator, hass, protocol, data_attribute="remain_duration", unit="s", icon="mdi:clock"))
+        sensors.append(Rtl433Sensor(coordinator, hass, protocol, data_attribute="speed", unit=f"{vol_unit}pm", icon="mdi:speedometer"))
+        sensors.append(Rtl433Sensor(coordinator, hass, protocol, data_attribute="volume", unit=vol_unit, icon="mdi:water-percent"))
+        sensors.append(Rtl433Sensor(coordinator, hass, protocol, data_attribute="volume_limit", unit=vol_unit, icon="mdi:water-percent"))
+        sensors.append(Rtl433Sensor(coordinator, hass, protocol, data_attribute="failsafe_duration", unit="s", icon="mdi:clock"))
+        sensors.append(Rtl433Sensor(coordinator, hass, protocol, data_attribute="plan_mode", unit="mode", icon="mdi:note"))
+        sensors.append(Rtl433Sensor(coordinator, hass, protocol, data_attribute="plan_sn", unit="sn", icon="mdi:note"))
     async_add_entities(sensors, True)
 
 class Rtl433Sensor(CoordinatorEntity, SensorEntity):
 
-    def __init__(self, coordinator: DataUpdateCoordinator, hass, tap, data_attribute, unit, device_class=False, icon=False):
+    def __init__(self, coordinator: DataUpdateCoordinator, hass, protocol, data_attribute, unit, device_class=False, icon=False):
         super().__init__(coordinator)
         name = data_attribute.replace("_", " ").title()
         self._state = None
-        self._name = tap[NAME] + " " + name
+        self._name = protocol[NAME] + " " + name
         self._id = self._name
         self.attribute = data_attribute
-        self.tap_id = tap[TAP_ID]
-        self.tap_name = tap[NAME]
+        self.protocol_id = protocol[protocol_ID]
+        self.protocol_name = protocol[NAME]
 
         self.platform = "sensor"
-        self._attr_unique_id = slugify(f"{DOMAIN}_{self.platform}_{data_attribute}_{self.tap_id}")
+        self._attr_unique_id = slugify(f"{DOMAIN}_{self.platform}_{data_attribute}_{self.protocol_id}")
         self._attrs = {
             "unit_of_measurement": unit
         }
@@ -71,11 +71,11 @@ class Rtl433Sensor(CoordinatorEntity, SensorEntity):
 
         self._attr_device_info = DeviceInfo(
             identifiers={
-                (DOMAIN, tap[TAP_ID])
+                (DOMAIN, protocol[protocol_ID])
             },
-            name=tap[NAME],
+            name=protocol[NAME],
             manufacturer=MANUFACTURER,
-            model=tap[TAP_ID],
+            model=protocol[protocol_ID],
             configuration_url="http://" + [WS_HOST]]
         )
 
