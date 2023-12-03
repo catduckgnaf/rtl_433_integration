@@ -7,7 +7,7 @@ import secrets
 import voluptuous as vol
 from homeassistant import config_entries
 
-from .const import DEFAULT_NAME, DOMAIN, WS_PORT, WS_IP, WS_ID, PROTOCOL_ID
+from .const import DEFAULT_NAME, DOMAIN, WS_PORT, WS_IP
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -15,8 +15,6 @@ _LOGGER = logging.getLogger(__name__)
 class RtlFlowHandler(config_entries.ConfigFlow):
 
     VERSION = 1
-    def __init__(self):
-        super().__init__()
 
     async def async_step_user(self, user_input=None):
         """Handle a flow start."""
@@ -30,9 +28,8 @@ class RtlFlowHandler(config_entries.ConfigFlow):
             return self.async_create_entry(title=DEFAULT_NAME, data=user_input)
 
         new_user_input = {
-            vol.Required(WS_IP, default=WS_IP): str,
-            vol.Required(WS_PORT, default=WS_PORT): int,
-
+            vol.Required(WS_IP, description="Enter the IP address of the RTL_433 webserver", default=WS_IP): str,
+            vol.Required(WS_PORT, description="Enter the port number of the RTL_433 webserver", default=WS_PORT): int,
         }
 
         schema = vol.Schema(new_user_input)
