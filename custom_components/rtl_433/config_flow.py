@@ -1,4 +1,3 @@
-"""Config flow to configure."""
 from __future__ import annotations
 
 import logging
@@ -23,9 +22,14 @@ class RtlFlowHandler(config_entries.ConfigFlow):
         errors = None
 
         if user_input is not None:
+            # Filter out any extra keys from user_input
+            filtered_user_input = {
+                key: user_input[key] for key in ['WS_IP', 'WS_PORT']
+            }
+
             await self.async_set_unique_id(secrets.token_hex(8))
             self._abort_if_unique_id_configured()
-            return self.async_create_entry(title=DEFAULT_NAME, data=user_input)
+            return self.async_create_entry(title=DEFAULT_NAME, data=filtered_user_input)
 
         new_user_input = {
             vol.Required(WS_IP, description="Enter the IP address of the RTL_433 webserver", default=WS_IP): str,
