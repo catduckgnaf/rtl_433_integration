@@ -26,28 +26,10 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup(_hass, _config):
     return True
 
-async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry)-> bool:
+async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up the platform."""
 
     ws_host = entry.data.get(WS_HOST)
-
-    SDR = rtl433http()
-    SDR.set_ip(ws_host)
-    try:
-        sdr_id = await sdr.get_sdr_id()
-    except JSONDecodeError:
-        try:
-            await asyncio.sleep(random.randint(1,3))
-            sdr_id = await sdr.get_sdr_id()
-        except JSONDecodeError:
-            await asyncio.sleep(random.randint(1,3))
-            sdr_id = await sdr.get_sdr_id()
-
-    _LOGGER.debug(f"Found SDR_ID: {sdr_id}")
-
-    gateway_config = await sdr.get_sdr_config(sdr_id)
-    if "end_dev" not in gateway_config:
-        raise IntegrationError("RTL_433 needs to be updated")
 
     devices = {
         "devs": sdr_config["end_dev"],
@@ -116,32 +98,16 @@ class RtlprotocolCoordinator(DataUpdateCoordinator):
         self.hass = hass
         self.protocol_id = protocol_id
 
-
     async def _async_update_data(self):
-        """Fetch data from API endpoint.
-
-        This is the place to pre-process the data to lookup tables
-        so entities can quickly look up their data.
-        """
-
-        #protocol_id = self.conf["protocols"][protocol_ID]
-        sdr_id = self.conf[sdr_ID]
+        sdr_id = self.conf["sdr_ID"]
 
         try:
-            # Note: asyncio.TimeoutError and aiohttp.ClientError are already
-            # handled by the data update coordinator.
             async with async_timeout.timeout(10):
                 return await self.protocol_api.fetch_data(sdr_id, self.protocol_id)
-        except:# ApiAuthError as err:
-            await asyncio.sleep(random.randint(1,3))
+        except:
+            await asyncio.sleep(random.randint(1, 3))
             async with async_timeout.timeout(10):
                 return await self.protocol_api.fetch_data(sdr_id, self.protocol_id)
-            # Raising ConfigEntryAuthFailed will cancel future updates
-            # and start a config flow with SOURCE_REAUTH (async_step_reauth)
-        #    raise ConfigEntryAuthFailed from err
-        #except ApiError as err:
-        #    raise UpdateFailed(f"Error communicating with API: {err}")
 
 async def async_reload_entry(hass: core.HomeAssistant, entry: ConfigEntry) -> None:
-    """Reload the config entry when it changed."""
     await hass.config_entries.async_reload(entry.entry_id)
