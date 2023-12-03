@@ -7,7 +7,7 @@ import secrets
 import voluptuous as vol
 from homeassistant import config_entries
 
-from .const import DEFAULT_NAME, DOMAIN, WS_HOST, WS_PORT, WS_IP, DEFAULT_NAME, WS_ID, PROTOCOL_ID
+from .const import DEFAULT_NAME, DOMAIN, WS_HOST, WS_PORT, WS_IP, NAME, WS_ID, PROTOCOL_ID
 
 _LOGGER = logging.getLogger(__name__)
 
