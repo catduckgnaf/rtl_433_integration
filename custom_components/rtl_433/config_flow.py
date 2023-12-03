@@ -38,5 +38,3 @@ async def async_step_user(self, user_input=None):
     schema = vol.Schema(new_user_input)
 
     return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
-
-        return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
