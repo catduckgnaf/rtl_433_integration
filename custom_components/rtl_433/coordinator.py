@@ -1,4 +1,3 @@
-"""rtl_433 Home Assistant Integration."""
 from __future__ import annotations
 
 from datetime import timedelta
@@ -8,6 +7,9 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from custom_components.rtl_433.api import Rtl433ApiClient
 import logging
+import asyncio
+import json
+import websockets
 
 class Rtl433DataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the API."""
@@ -34,20 +36,28 @@ class Rtl433DataUpdateCoordinator(DataUpdateCoordinator):
         """Update data via library."""
         try:
             # Connect to rtl_433's HTTP WebSocket API
-            # for event in self.ws_events():
-            #     # Process each JSON event
-            #     self.handle_event(event)
-            pass
+            async with websockets.connect(f'{self.ws_host}/ws') as ws:
+                self.logger.info(f'Connected to {self.ws_host}')
+                
+                while True:
+                    # Fetch data from the WebSocket
+                    message = await ws.recv()
+                    self.handle_event(message)
 
         except ConfigEntryAuthFailed as exception:
             raise ConfigEntryAuthFailed(f"Authentication error: {exception}") from exception
         except UpdateFailed as exception:
             raise UpdateFailed(f"Communication error: {exception}") from exception
 
-    # def ws_events(self):
-    #     """Generate JSON events from rtl_433's WebSocket API."""
-    #     # Implementation of ws_events 
+    def handle_event(self, message):
+        """Handle each JSON event."""
+        try:
+            # Decode the message as JSON
+            data = json.loads(message)
 
-    # def handle_event(self, line):
-    #     """Handle each JSON event."""
-    #     # Implementation of handle_event 
+            #
+            # Your custom handling logic here
+            #
+
+        except json.JSONDecodeError as e:
+            self.logger.error(f'Error decoding JSON: {e}')
