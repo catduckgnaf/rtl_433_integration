@@ -1,4 +1,4 @@
-"""Support for OpenEVSE buttons."""
+"""Support for Rtl_433 buttons."""
 from __future__ import annotations
 
 import logging
@@ -8,7 +8,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from . import OpenEVSEManager
+from . import Rtl_433Manager
 from .const import BUTTON_TYPES, CONF_NAME, DOMAIN, MANAGER
 
 _LOGGER = logging.getLogger(__name__)
@@ -19,25 +19,25 @@ async def async_setup_entry(
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up OpenEVSE buttons based on a config entry."""
+    """Set up Rtl_433 buttons based on a config entry."""
     manager = hass.data[DOMAIN][config_entry.entry_id][MANAGER]
     assert manager is not None
     buttons = []
     for button in BUTTON_TYPES:  # pylint: disable=consider-using-dict-items
-        buttons.append(OpenEVSEButton(BUTTON_TYPES[button], manager, config_entry))
+        buttons.append(Rtl_433Button(BUTTON_TYPES[button], manager, config_entry))
     async_add_entities(buttons, False)
 
 
-class OpenEVSEButton(ButtonEntity):
-    """OpenEVSE restart button."""
+class Rtl_433Button(ButtonEntity):
+    """Rtl_433 restart button."""
 
     def __init__(
         self,
         button_description: ButtonEntityDescription,
-        manager: OpenEVSEManager,
+        manager: Rtl_433Manager,
         config_entry: ConfigEntry,
     ) -> None:
-        """Initialise a OpenEVSE button."""
+        """Initialise a Rtl_433 button."""
         self.entity_description = button_description
         self.config = config_entry
         self.manager = manager
@@ -51,7 +51,7 @@ class OpenEVSEButton(ButtonEntity):
     def device_info(self) -> dict:
         """Return a port description for device registry."""
         info = {
-            "manufacturer": "OpenEVSE",
+            "manufacturer": "Rtl_433",
             "name": self.config.data[CONF_NAME],
             "connections": {(DOMAIN, self._base_unique_id)},
         }
