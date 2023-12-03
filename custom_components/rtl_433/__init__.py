@@ -34,18 +34,18 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry)-> bool
     SDR = rtl433http()
     SDR.set_ip(ws_host)
     try:
-        sdr_id = await sdr.get_gw_id()
+        sdr_id = await sdr.get_sdr_id()
     except JSONDecodeError:
         try:
             await asyncio.sleep(random.randint(1,3))
-            gw_id = await sdr.get_gw_id()
+            sdr_id = await sdr.get_sdr_id()
         except JSONDecodeError:
             await asyncio.sleep(random.randint(1,3))
-            gw_id = await sdr.get_gw_id()
+            sdr_id = await sdr.get_sdr_id()
 
     _LOGGER.debug(f"Found SDR_ID: {sdr_id}")
 
-    gateway_config = await sdr.get_sdr_config(gw_id)
+    gateway_config = await sdr.get_sdr_config(sdr_id)
     if "end_dev" not in gateway_config:
         raise IntegrationError("RTL_433 needs to be updated")
 
@@ -125,7 +125,7 @@ class RtltapCoordinator(DataUpdateCoordinator):
         """
 
         #tap_id = self.conf["taps"][TAP_ID]
-        gw_id = self.conf[GW_ID]
+        sdr_id = self.conf[sdr_ID]
 
         try:
             # Note: asyncio.TimeoutError and aiohttp.ClientError are already

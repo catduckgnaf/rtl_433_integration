@@ -98,7 +98,7 @@ class RtlBinarySensor(CoordinatorEntity, BinarySensorEntity):
 
     async def _dismiss_alerts(self):
         _LOGGER.debug(f"Dismissing all alerts for {self.entity_id}")
-        await self.device_api.dismiss_alert(self.coordinator.get_gw_id(), self.device_id)
+        await self.device_api.dismiss_alert(self.coordinator.get_sdr_id(), self.device_id)
 
 
     async def _dismiss_alert(self):
@@ -107,7 +107,7 @@ class RtlBinarySensor(CoordinatorEntity, BinarySensorEntity):
         alert_id = self.alert_lookup(alert_type)
         if alert_id is not None:
             _LOGGER.debug(f"Dismissing {alert_type} alert for {self.entity_id}")
-            await self.device_api.dismiss_alert(self.coordinator.get_gw_id(), self.device_id)
+            await self.device_api.dismiss_alert(self.coordinator.get_sdr_id(), self.device_id)
         else:
             _LOGGER.debug("No matching alert found. Do nothing")
 
