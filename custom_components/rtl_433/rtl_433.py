@@ -3,8 +3,8 @@ import json
 import logging
 import random
 import re
-import aiohttp
 import websocket
+import aiohttp
 from json.decoder import JSONDecodeError
 
 from .const import (CONFIG_CMD, DEFAULT_TIME, DISMISS_ALERT_CMD, START_CMD,
@@ -14,27 +14,27 @@ _LOGGER = logging.getLogger(__name__)
 
 class rtl433http:
 
-    ip = False
-    sdr_id = False
-
     def __init__(self):
-        # Do nothing
-        print("Hello, its me!")
+        self._ip = None
+        self._sdr_id = None
 
-    def set_ip(self, ip):
-        self.ip = ip
+    @property
+    def ip(self):
+        return self._ip
 
-    def get_ip(self, ip):
-        return self.ip
+    @ip.setter
+    def ip(self, value):
+        self._ip = value
 
-    def set_sdr_id(self, sdr_id):
-        self.sdr_id = sdr_id
+    @property
+    def sdr_id(self):
+        return self._sdr_id
 
-    def get_sdr_id(self):
-        return self.sdr_id
+    @sdr_id.setter
+    def sdr_id(self, value):
+        self._sdr_id = value
 
     def clean_response(self, text):
-        """Remove html tags from a string"""
         text = text.replace("api", "")
         clean = re.compile('<.*?>')
         cleaned_text = re.sub(clean, '', text)
@@ -42,19 +42,17 @@ class rtl433http:
         return cleaned_text.strip()
 
     async def _request(self, data):
-
         headers = {
           "content-type": "application/json; charset=UTF-8"
         }
-
         url = "http://" + self.ip + "/api.shtml"
         response = await self._make_request(url, data, headers)
-        # Every now and then, a request will throw a 404.
-        # Ive never seen it fail twice, so lets try it again.
+        
         if response.find("404") != -1:
             _LOGGER.debug("Got a 404 issue: Wait and try again")
-            await asyncio.sleep(random.randint(1,3))
+            await asyncio.sleep(random.randint(1, 3))
             response = await self._make_request(url, data, headers)
+        
         try:
             jsonresp = json.loads(self.clean_response(response))
         except JSONDecodeError:
@@ -64,9 +62,8 @@ class rtl433http:
 
     async def _make_request(self, url, data, headers):
         async with aiohttp.ClientSession() as session:
-                async with await session.post(url, json=data, headers=headers) as resp:
-                    response = await resp.text()
-        await session.close()
+            async with session.post(url, json=data, headers=headers) as resp:
+                response = await resp.text()
         return response
 
     async def fetch_data(self, sdr_id, dev_id):
@@ -115,8 +112,6 @@ class rtl433http:
         status = await self._request(data)
         return status
 
-    ## Config helper functions: If multiples of these are going to be used,
-    ## it would make sense to use the config function above and use the output
     async def get_vol_unit(self, sdr_id):
         config = await self.get_sdr_config(sdr_id)
         return config["vol_unit"]
@@ -131,5 +126,5 @@ class rtl433http:
             "devs": config["end_dev"],
             "names": config["dev_name"],
         }
-        status = await self._request(data)
-        return status["ret"] == 0
+
+# ... (other import statements and code)
