@@ -3,6 +3,7 @@ import json
 import logging
 import random
 import re
+import websocket_client
 from json.decoder import JSONDecodeError
 
 import aiohttp

@@ -7,7 +7,7 @@ import secrets
 import voluptuous as vol
 from homeassistant import config_entries
 
-from .const import DEFAULT_NAME, DOMAIN, GW_ID, WS_HOST, NAME, TAP_ID
+from .const import DEFAULT_NAME, DOMAIN, WS_HOST, WS_PORT, WS_IP, DEFAULT_NAME, WS_ID, PROTOCOL_ID
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -31,6 +31,8 @@ class RtlFlowHandler(config_entries.ConfigFlow):
 
         new_user_input = {
             vol.Required(WS_HOST, default=WS_HOST): str,
+            vol.Required(WS_PORT, default=WS_PORT): int,
+
         }
 
         schema = vol.Schema(new_user_input)
