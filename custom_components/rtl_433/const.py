@@ -216,7 +216,7 @@ PROTOCOLS = {
     }
 
 # key: name
-BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
+BINARY_SENSORS: Final[dict[str, RTL433BinarySensorEntityDescription]] = {
     "tamper": BinarySensorEntityDescription(
         name="Tamper",
         key="tamper",
@@ -233,8 +233,6 @@ BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
         name="Door Closed",
         key="Door"
         device_class=BinarySensorDeviceClass.DOOR,
-        entity_category=EntityCategory.DIAGNOSTIC,
-        entity_registry_enabled_default=False,
     ),
     "alarm": BinarySensorEntityDescription(
         name="Alarm",
@@ -243,55 +241,6 @@ BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
     ),
-}
-
-    
-
-# Binary Sensors
-BINARY_SENSORS = {
-    "tamper": {
-        "device_type": "binary_sensor",
-        "object_suffix": "tamper",
-        "config": {
-            "device_class": "safety",
-            "force_update": "true",
-            "payload_on": "1",
-            "payload_off": "0",
-            "entity_category": "diagnostic"
-        }
-    },
-    "closed": {
-        "device_type": "binary_sensor",
-        "object_suffix": "closed",
-        "config": {
-            "device_class": "door",
-            "force_update": "true",
-            "payload_on": "1",
-            "payload_off": "0",
-        }
-    },
-    "alarm": {
-        "device_type": "binary_sensor",
-        "object_suffix": "alarm",
-        "config": {
-            "device_class": "safety",
-            "force_update": "true",
-            "payload_on": "1",
-            "payload_off": "0",
-            "entity_category": "diagnostic"
-        }
-    },
-    "detect_wet": {
-        "device_type": "binary_sensor",
-        "object_suffix": "moisture",
-        "config": {
-            "name": "Water Sensor",
-            "device_class": "moisture",
-            "force_update": "true",
-            "payload_on": "1",
-            "payload_off": "0"
-        }
-    },
 }
 
 # Sensor Types
