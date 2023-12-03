@@ -18,7 +18,7 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import (DataUpdateCoordinator,
                                                       UpdateFailed)
 
-from .const import DOMAIN, WS_HOST, WS_IP, WS_PORT, NAME, PLATFORMS, TAP_ID, WS_ID
+from .const import DOMAIN, WS_HOST, WS_IP, WS_PORT, NAME, PLATFORMS, WS_ID
 from .rtl_433 import rtl433http
 
 _LOGGER = logging.getLogger(__name__)
