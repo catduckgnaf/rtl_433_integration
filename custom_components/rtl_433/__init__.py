@@ -31,36 +31,36 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry)-> bool
 
     ws_host = entry.data.get(WS_HOST)
 
-    linker = rtl433http()
-    linker.set_ip(ws_host)
+    SDR = rtl433http()
+    SDR.set_ip(ws_host)
     try:
-        gw_id = await linker.get_gw_id()
+        sdr_id = await sdr.get_gw_id()
     except JSONDecodeError:
         try:
             await asyncio.sleep(random.randint(1,3))
-            gw_id = await linker.get_gw_id()
+            gw_id = await sdr.get_gw_id()
         except JSONDecodeError:
             await asyncio.sleep(random.randint(1,3))
-            gw_id = await linker.get_gw_id()
+            gw_id = await sdr.get_gw_id()
 
-    _LOGGER.debug(f"Found GW_ID: {gw_id}")
+    _LOGGER.debug(f"Found SDR_ID: {sdr_id}")
 
-    gateway_config = await linker.get_gw_config(gw_id)
+    gateway_config = await sdr.get_sdr_config(gw_id)
     if "end_dev" not in gateway_config:
         raise IntegrationError("RTL_433 needs to be updated")
 
     devices = {
-        "devs": gateway_config["end_dev"],
-        "names": gateway_config["dev_name"],
+        "devs": sdr_config["end_dev"],
+        "names": sdr_config["dev_name"],
     }
     _LOGGER.debug(f"Found devices: {devices}")
 
     coordinator_conf = {
         WS_HOST: ws_host,
-        GW_ID: gw_id,
+        SDR_ID: sdr_id,
     }
     counter = 0
-    tap_list = []
+    protocol_list = []
     for tap_id in devices["devs"]:
         coordinator = RtlCoordinator(hass, linker, coordinator_conf, tap_id)
         device_name = devices["names"][counter]
@@ -80,8 +80,7 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry)-> bool
 
     conf = {
         WS_HOST: ws_host,
-        GW_ID: gw_id,
-        "taps": tap_list,
+        "Protocol": protocol_list,
         "vol_unit": vol_unit,
     }
 
@@ -105,23 +104,18 @@ async def async_remove_config_entry_device(hass: core.HomeAssistant, entry: Conf
     return True
 
 class RtltapCoordinator(DataUpdateCoordinator):
-    def __init__(self, hass, linker, conf, tap_id):
+    def __init__(self, hass, sdr, conf, protocol_id):
         super().__init__(
             hass,
             _LOGGER,
             name=DOMAIN,
             update_interval=timedelta(seconds=13),
         )
-        self.tap_api = linker
+        self.protocol_api = sdr
         self.conf = conf
         self.hass = hass
-        self.tap_id = tap_id
+        self.protocol_id = protocol_id
 
-    def get_gw_id(self):
-        return self.conf[GW_ID]
-
-    #def get_vol_unit(self):
-    #    return self.conf["vol_unit"]
 
     async def _async_update_data(self):
         """Fetch data from API endpoint.
@@ -137,11 +131,11 @@ class RtltapCoordinator(DataUpdateCoordinator):
             # Note: asyncio.TimeoutError and aiohttp.ClientError are already
             # handled by the data update coordinator.
             async with async_timeout.timeout(10):
-                return await self.tap_api.fetch_data(gw_id, self.tap_id)
+                return await self.protocol_api.fetch_data(sdr_id, self.protocol_id)
         except:# ApiAuthError as err:
             await asyncio.sleep(random.randint(1,3))
             async with async_timeout.timeout(10):
-                return await self.tap_api.fetch_data(gw_id, self.tap_id)
+                return await self.protocol_api.fetch_data(sdr_id, self.protocol_id)
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
         #    raise ConfigEntryAuthFailed from err
