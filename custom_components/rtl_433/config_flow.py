@@ -32,7 +32,7 @@ async def async_step_user(self, user_input=None):
 
     new_user_input = {
         vol.Required(WS_IP, description="Enter the IP address of the RTL_433 webserver", default=WS_IP): str,
-        vol.Required(WS_PORT, description="Enter the port number of the RTL_433 webserver", default=WS_PORT): int,
+        vol.Required(WS_PORT, description="Enter the port of the RTL_433 webserver", default=WS_PORT): int,
     }
 
     schema = vol.Schema(new_user_input)
