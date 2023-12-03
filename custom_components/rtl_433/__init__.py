@@ -7,9 +7,8 @@ from json.decoder import JSONDecodeError
 import async_timeout
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
-from h11 import Data
 from homeassistant import core
-from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.exceptions import IntegrationError
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.device_registry import DeviceEntryType
@@ -31,31 +30,27 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry) -> boo
 
     ws_host = entry.data.get(WS_HOST)
 
-    # Define or replace the variable 'sdr_config'
-    sdr_config = entry.data.get("sdr_config", {})
+    protocol_config = entry.data.get("protocol_config", {})
 
     devices = {
-        "devs": sdr_config.get("end_dev", []),
-        "names": sdr_config.get("dev_name", []),
+        "devs": protocol_config.get("end_dev", []),
+        "names": protocol_config.get("protocol_name", []),
     }
     _LOGGER.debug(f"Found devices: {devices}")
 
     coordinator_conf = {
         WS_HOST: ws_host,
-        SDR_ID: sdr_id,  # Make sure to define or replace 'sdr_id'
     }
-    counter = 0
     protocol_list = []
-    for protocol_id in devices["devs"]:
+    for counter, protocol_id in enumerate(devices["devs"]):
         coordinator = RtlCoordinator(hass, linker, coordinator_conf, protocol_id)
         device_name = devices["names"][counter]
         protocol_list.append({
             NAME: device_name,
-            SDR_ID: sdr_id,  # Make sure to define or replace 'sdr_id'
+            WS_ID: protocol_id,
             WS_HOST: ws_host,
             "coordinator": coordinator
         })
-        counter = counter + 1
         await coordinator.async_config_entry_first_refresh()
         _LOGGER.debug(f"Coordinator has synced for {protocol_id}")
     _LOGGER.debug(f"List of Devices: {protocol_list}")
@@ -89,28 +84,28 @@ async def async_remove_config_entry_device(hass: core.HomeAssistant, entry: Conf
     return True
 
 class RtlCoordinator(DataUpdateCoordinator):
-    def __init__(self, hass, sdr, conf, protocol_id):
+    def __init__(self, hass, protocol, conf, protocol_id):
         super().__init__(
             hass,
             _LOGGER,
             name=DOMAIN,
             update_interval=timedelta(seconds=13),
         )
-        self.protocol_api = sdr
+        self.protocol_api = protocol
         self.conf = conf
         self.hass = hass
         self.protocol_id = protocol_id
 
     async def _async_update_data(self):
-        sdr_id = self.conf.get("sdr_ID", "")
+        protocol_id = self.conf.get("protocol_ID", "")
 
         try:
             async with async_timeout.timeout(10):
-                return await self.protocol_api.fetch_data(sdr_id, self.protocol_id)
-        except:
-            await asyncio.sleep(random.randint(1, 3))
-            async with async_timeout.timeout(10):
-                return await self.protocol_api.fetch_data(sdr_id, self.protocol_id)
+                return await self.protocol_api.fetch_data(protocol_id, self.protocol_id)
+        except async_timeout.TimeoutError:
+            _LOGGER.warning("Timeout while fetching data")
+        except Exception as e:
+            _LOGGER.error(f"Error updating data: {e}")
 
 async def async_reload_entry(hass: core.HomeAssistant, entry: ConfigEntry) -> None:
     await hass.config_entries.async_reload(entry.entry_id)

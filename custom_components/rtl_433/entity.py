@@ -13,7 +13,7 @@ from homeassistant.components.switch import SwitchEntityDescription
 @dataclass
 class RtlSelectEntityDescription(SelectEntityDescription):
     """Class describing RTL_433 select entities."""
-    protocols = {
+    protocol_list = {
         1: "Silvercrest Remote Control",
         2: "Rubicson, TFA 30.3197 or InFactory PT-310 Temperature Sensor",
         3: "Prologue, FreeTec NC-7104, NC-7159-675 temperature sensor",
