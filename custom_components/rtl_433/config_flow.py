@@ -22,6 +22,8 @@ class RtlFlowHandler(config_entries.ConfigFlow):
         errors = None
 
         if user_input is not None:
+            _LOGGER.debug(f"Received user input: {user_input}")
+
             # Filter out any extra keys from user_input
             filtered_user_input = {
                 key: user_input[key] for key in ['WS_IP', 'WS_PORT']
@@ -31,11 +33,15 @@ class RtlFlowHandler(config_entries.ConfigFlow):
             self._abort_if_unique_id_configured()
             return self.async_create_entry(title=DEFAULT_NAME, data=filtered_user_input)
 
+        _LOGGER.debug(f"Filtered user input: {filtered_user_input}")
+
         new_user_input = {
             vol.Required(WS_IP, description="Enter the IP address of the RTL_433 webserver", default=WS_IP): str,
             vol.Required(WS_PORT, description="Enter the port number of the RTL_433 webserver", default=WS_PORT): int,
         }
 
         schema = vol.Schema(new_user_input)
+
+        _LOGGER.debug("Showing user form.")
 
         return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
