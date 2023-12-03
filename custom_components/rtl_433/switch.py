@@ -17,20 +17,13 @@ from homeassistant.util import slugify
 
 _LOGGER = logging.getLogger(__name__)
 
-from .const import (ATTR_DEFAULT_TIME, ATTR_DURATION, ATTR_STATE, ATTR_VOL,
-                    ATTR_VOLUME, DEFAULT_TIME, DEFAULT_VOL, DOMAIN
-                    WS_HOST, MANUFACTURER, NAME)
-
+from .const import  DOMAIN, WS_HOST, MANUFACTURER, NAME
 
 async def async_setup_entry(
     hass, config, async_add_entities, discovery_info=None
 ):
     """Setup the switch platform."""
-    #config_id = config.unique_id
-    #_LOGGER.debug(f"Configuring switch entities for config {config_id}")
-    #if config_id not in hass.data[DOMAIN]:
-    #    await asyncio.sleep(random.randint(1,3))
-    #protocols = hass.data[DOMAIN][config_id]["conf"]["protocols"]
+
     protocols = hass.data[DOMAIN][config.entry_id]["conf"]["protocols"]
     switches = []
     for protocol in protocols:
@@ -43,8 +36,6 @@ class RtlSwitch(CoordinatorEntity, SwitchEntity):
     def __init__(self, coordinator: DataUpdateCoordinator, hass, protocol):
         super().__init__(coordinator)
         self._state = None
-        self._name = protocol[NAME]
-        self._id = protocol[PROTOCOL_ID]
         self.protocol_id = protocol[PROTOCOL_ID]
         self.protocol_api = coordinator.protocol_api
         self.platform = "switch"
@@ -77,13 +68,13 @@ class RtlSwitch(CoordinatorEntity, SwitchEntity):
     def duration_entity(self):
         name = self._name.replace(" ", "_")
         name = self._name.replace("-", "_")
-        return f"number.{DOMAIN}_{name}_watering_duration".lower()
+        return f"number.{DOMAIN}_{name}_duration".lower()
 
     @property
     def volume_entity(self):
         name = self._name.replace(" ", "_")
         name = self._name.replace("-", "_")
-        return f"number.{DOMAIN}_{name}_watering_volume".lower()
+        return f"number.{DOMAIN}_{name}_volume".lower()
 
     async def async_turn_on(self, **kwargs):
         duration = self.get_watering_duration()
@@ -100,64 +91,6 @@ class RtlSwitch(CoordinatorEntity, SwitchEntity):
         gw_id = self.coordinator.get_gw_id()
         attributes = await self.protocol_api.turn_off(gw_id, self.protocol_id)
         await self.coordinator.async_request_refresh()
-
-    def get_watering_duration(self):
-        entity = self.hass.states.get(self.duration_entity)
-        if not entity:
-            _LOGGER.debug(f"Entity {self.duration_entity} not found -- setting default")
-            duration = DEFAULT_TIME
-            self._attrs[ATTR_DEFAULT_TIME] = True
-        elif entity.state == STATE_UNKNOWN:
-            _LOGGER.debug(f"Entity {self.duration_entity} state unknown -- setting default")
-            duration = DEFAULT_TIME
-            self._attrs[ATTR_DEFAULT_TIME] = True
-        else:
-            duration = entity.state
-            self._attrs[ATTR_DEFAULT_TIME] = False
-        self._attrs[ATTR_DURATION] = duration
-        return duration
-
-    def get_watering_volume(self):
-        entity = self.hass.states.get(self.volume_entity)
-        if not entity:
-            volume = DEFAULT_VOL
-            _LOGGER.debug(f"Entity {self.volume_entity} not found -- setting default")
-            self._attrs[ATTR_VOL] = False
-        elif entity.state == STATE_UNKNOWN:
-            volume = DEFAULT_VOL
-            _LOGGER.debug(f"Entity {self.volume_entity} state unknown -- setting default")
-            self._attrs[ATTR_VOL] = False
-        elif int(float(entity.state)) == 0:
-            volume = entity.state
-            _LOGGER.debug(f"Entity {self.volume_entity} set to 0 -- ignore")
-            self._attrs[ATTR_VOL] = False
-        else:
-            volume = entity.state
-            self._attrs[ATTR_VOL] = True
-        self._attrs[ATTR_VOLUME] = volume
-        return volume
-
-    @property
-    def extra_state_attributes(self):
-        return self._attrs
-
-    @property
-    def state(self):
-        status = self.coordinator.data
-        self._attrs["data"] = status
-        _LOGGER.debug(f"Switch Status: {status}")
-        duration = self.get_watering_duration()
-        _LOGGER.debug(f"Set duration:{duration}")
-        volume = self.get_watering_volume()
-        _LOGGER.debug(f"Set volume:{volume}")
-        self._attrs[ATTR_STATE] = status[ATTR_STATE]
-        state = "unknown"
-        if status[ATTR_STATE]:
-            state = "on"
-        elif not status[ATTR_STATE]:
-            state = "off"
-            _LOGGER.debug(f"Switch {self.name} state {state}")
-        return state
 
     @property
     def is_on(self):

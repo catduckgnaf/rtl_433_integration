@@ -18,11 +18,11 @@ class Rtl433DataUpdateCoordinator(DataUpdateCoordinator):
         self,
         hass: HomeAssistant,
         client: Rtl433ApiClient,
-        http_host: str,
+        ws_host: str,
     ) -> None:
         """Initialize the coordinator."""
         self.client = client
-        self.ws_host = http_host
+        self.ws_host = ws_host
         super().__init__(
             hass=hass,
             logger=logging.getLogger(__name__),  # Adjust logger as needed

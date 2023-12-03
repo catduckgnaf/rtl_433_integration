@@ -1,4 +1,7 @@
 """Support for Rtl_433 buttons."""
+
+### Consider this a placeholder, no button support yet.
+
 from __future__ import annotations
 
 import logging
@@ -49,7 +52,7 @@ class Rtl_433Button(ButtonEntity):
 
     @property
     def device_info(self) -> dict:
-        """Return a port description for device registry."""
+        """Return a  description for device registry."""
         info = {
             "manufacturer": "Rtl_433",
             "name": self.config.data[CONF_NAME],

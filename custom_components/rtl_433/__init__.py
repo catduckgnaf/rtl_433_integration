@@ -18,8 +18,9 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import (DataUpdateCoordinator,
                                                       UpdateFailed)
 
-from .const import DOMAIN, WS_HOST, NAME, PLATFORMS, WS_ID
+from .const import DOMAIN, WS_HOST, NAME, PLATFORMS, WS_ID, SDR_ID
 from .rtl_433 import rtl433http
+from .entity import *
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -31,15 +32,18 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry) -> boo
 
     ws_host = entry.data.get(WS_HOST)
 
+    # Define or replace the variable 'sdr_config'
+    sdr_config = entry.data.get("sdr_config", {})
+
     devices = {
-        "devs": sdr_config["end_dev"],
-        "names": sdr_config["dev_name"],
+        "devs": sdr_config.get("end_dev", []),
+        "names": sdr_config.get("dev_name", []),
     }
     _LOGGER.debug(f"Found devices: {devices}")
 
     coordinator_conf = {
         WS_HOST: ws_host,
-        SDR_ID: sdr_id,
+        SDR_ID: sdr_id,  # Make sure to define or replace 'sdr_id'
     }
     counter = 0
     protocol_list = []
@@ -48,7 +52,7 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry) -> boo
         device_name = devices["names"][counter]
         protocol_list.append({
             NAME: device_name,
-            protocol_ID: protocol_id,
+            SDR_ID: sdr_id,  # Make sure to define or replace 'sdr_id'
             WS_HOST: ws_host,
             "coordinator": coordinator
         })
@@ -57,7 +61,7 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry) -> boo
         _LOGGER.debug(f"Coordinator has synced for {protocol_id}")
     _LOGGER.debug(f"List of Devices: {protocol_list}")
 
-    vol_unit = gateway_config["vol_unit"]
+    vol_unit = gateway_config.get("vol_unit", "")
     _LOGGER.debug(f"Setting volume unit to {vol_unit}")
 
     conf = {
@@ -69,7 +73,7 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry) -> boo
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {"conf": conf}
     _LOGGER.debug(hass.data[DOMAIN])
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-    # Reload entry when its updated.
+    # Reload entry when it's updated.
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 
     return True
@@ -85,7 +89,7 @@ async def async_remove_config_entry_device(hass: core.HomeAssistant, entry: Conf
     device_registry(hass).async_remove_device(device.id)
     return True
 
-class RtlprotocolCoordinator(DataUpdateCoordinator):
+class RtlCoordinator(DataUpdateCoordinator):
     def __init__(self, hass, sdr, conf, protocol_id):
         super().__init__(
             hass,
@@ -99,7 +103,7 @@ class RtlprotocolCoordinator(DataUpdateCoordinator):
         self.protocol_id = protocol_id
 
     async def _async_update_data(self):
-        sdr_id = self.conf["sdr_ID"]
+        sdr_id = self.conf.get("sdr_ID", "")
 
         try:
             async with async_timeout.timeout(10):

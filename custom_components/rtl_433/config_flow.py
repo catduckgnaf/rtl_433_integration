@@ -2,10 +2,8 @@ from __future__ import annotations
 
 import logging
 import secrets
-
 import voluptuous as vol
 from homeassistant import config_entries
-
 from .const import DEFAULT_NAME, DOMAIN, WS_HOST
 
 _LOGGER = logging.getLogger(__name__)
@@ -31,7 +29,7 @@ class RtlFlowHandler(config_entries.ConfigFlow):
             return self.async_create_entry(title=DEFAULT_NAME, data=filtered_user_input)
 
         new_user_input = {
-            vol.Required(WS_HOST, description="Enter the HOSTS of the RTL_433 webserver", default=WS_HOST): str,
+            vol.Required(WS_HOST, description="Enter the HOSTS of the RTL_433 webserver"): str(),
         }
 
         schema = vol.Schema(new_user_input)

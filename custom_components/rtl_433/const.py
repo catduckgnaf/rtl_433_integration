@@ -1,33 +1,21 @@
-DOMAIN = "rtl_433"
-STATUS_CMD = 3
-START_CMD = 6
-STOP_CMD = 7
-CONFIG_CMD = 16
-DISMISS_ALERT_CMD = 10
-DEVICE_ID = "ID of Individual RF Device"
-PROTOCOL_ID = "ID of RF Protocol"
-PROTOCOL_NAME = "Name of RF Protocol"
-DEVICE_MODEL = "Model of RF Device"
-DEVICE_FREQ = "Frequency of RF Device"
+
 
 # Config Flow
 WS_ID = "ID of rtl_433 Webserver"
 WS_HOST= "192.1688.0.100:9443"
 SDR_ID = "ID of rtl_433 Gateway"
 SDR_NAME = "ID of rtl_433 Gateway"
-
-DEFAULT_TIME = 15
 DEFAULT_NAME = "RTL_433 HTTP"
 NAME = "RTL_433 HTTP"
+DOMAIN = "rtl_433"
+DEVICE_ID = "ID of Individual RF Device"
+PROTOCOL_ID = "INT ID of RF Protocol"
+PROTOCOL_NAME = "Name of RF Protocol"
+DEVICE_MODEL = "Model of RF Device"
+DEVICE_FREQ = "Frequency of RF Device"
 
 # Attributes
-DEFAULT_VOL = 0
 PLATFORMS = ['number', 'binary_sensor', 'sensor', 'switch']
-ATTR_DEFAULT_TIME = 'Default Time'
-ATTR_VOL = "Watering by Volume"
-ATTR_DURATION = "Watering Duration"
-ATTR_VOLUME = "Watering Volume"
-ATTR_STATE = "is_watering"
 MANUFACTURER = "RTL_SDR"
 
 # Sensor Types
