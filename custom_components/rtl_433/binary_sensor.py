@@ -17,7 +17,8 @@ from homeassistant.util import slugify
 _LOGGER = logging.getLogger(__name__)
 
 
-from .const import DOMAIN, WS_HOST, MANUFACTURER, NAME
+from .const import DOMAIN, WS_HOST, MANUFACTURER, NAME, BINARY_SENSORS
+from .entity import *
 
 
 async def async_setup_entry(

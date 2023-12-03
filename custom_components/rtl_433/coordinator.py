@@ -46,8 +46,8 @@ class Rtl433DataUpdateCoordinator(DataUpdateCoordinator):
 
     # def ws_events(self):
     #     """Generate JSON events from rtl_433's WebSocket API."""
-    #     # Implementation of ws_events (add as needed)
+    #     # Implementation of ws_events 
 
     # def handle_event(self, line):
     #     """Handle each JSON event."""
-    #     # Implementation of handle_event (add as needed)
+    #     # Implementation of handle_event 
