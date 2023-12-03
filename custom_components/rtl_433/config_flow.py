@@ -5,6 +5,8 @@ import secrets
 import voluptuous as vol
 from homeassistant import config_entries
 from .const import DEFAULT_NAME, DOMAIN, WS_HOST
+from .rtl_433 import rtl433http
+
 
 _LOGGER = logging.getLogger(__name__)
 
