@@ -31,7 +31,7 @@ class RtlFlowHandler(config_entries.ConfigFlow):
             return self.async_create_entry(title=DEFAULT_NAME, data=filtered_user_input)
 
         new_user_input = {
-            vol.Required(WS_HOST, description="Enter the HOSTs of the RTL_433 webserver", default=WS_HOST): str,
+            vol.Required(WS_HOST, description="Enter the HOSTS of the RTL_433 webserver", default=WS_HOST): str,
         }
 
         schema = vol.Schema(new_user_input)
