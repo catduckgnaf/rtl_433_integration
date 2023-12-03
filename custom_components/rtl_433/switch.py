@@ -60,9 +60,9 @@ class RtlSwitch(CoordinatorEntity, SwitchEntity):
             identifiers={
                 (DOMAIN, tap[TAP_ID])
             },
-            name=tap[NAME],
+            name=[NAME],
             manufacturer=MANUFACTURER,
-            configuration_url="http://" + tap[WS_HOST] + "/"
+            configuration_url="http://" + [WS_HOST]
         )
 
     @property
