@@ -21,6 +21,9 @@ class RtlFlowHandler(config_entries.ConfigFlow):
 
         errors = None
 
+        # Define filtered_user_input with a default value
+        filtered_user_input = {}
+
         if user_input is not None:
             _LOGGER.debug(f"Received user input: {user_input}")
 
