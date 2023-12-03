@@ -55,13 +55,10 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry) -> boo
         _LOGGER.debug(f"Coordinator has synced for {protocol_id}")
     _LOGGER.debug(f"List of Devices: {protocol_list}")
 
-    vol_unit = gateway_config.get("vol_unit", "")
-    _LOGGER.debug(f"Setting volume unit to {vol_unit}")
 
     conf = {
         WS_HOST: ws_host,
         "Protocol": protocol_list,
-        "vol_unit": vol_unit,
     }
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {"conf": conf}
