@@ -215,6 +215,35 @@ PROTOCOLS = {
         250: "Schou 72543 Day Rain Gauge"
     }
 
+# key: name
+BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
+    "tamper": BinarySensorEntityDescription(
+        name="Tamper",
+        key="tamper",
+        device_class=BinarySensorDeviceClass.TAMPER,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+    ),
+    "detect_wet": BinarySensorEntityDescription(
+        name="Water Sensor",
+        key="moisture",
+        device_class=BinarySensorDeviceClass.MOISTURE,
+    ),
+    "closed": BinarySensorEntityDescription(
+        name="Door Closed",
+        key="Door"
+        device_class=BinarySensorDeviceClass.DOOR,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+    ),
+    "alarm": BinarySensorEntityDescription(
+        name="Alarm",
+        key="alarm",
+        device_class=BinarySensorDeviceClass.SAFETY,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+    ),
+}
 
     
 
@@ -235,7 +264,7 @@ BINARY_SENSORS = {
         "device_type": "binary_sensor",
         "object_suffix": "closed",
         "config": {
-            "device_class": "safety",
+            "device_class": "door",
             "force_update": "true",
             "payload_on": "1",
             "payload_off": "0",
