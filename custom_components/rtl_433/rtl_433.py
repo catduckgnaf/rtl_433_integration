@@ -4,9 +4,8 @@ import logging
 import random
 import re
 import aiohttp
-import websocket
+import websockets
 from json.decoder import JSONDecodeError
-import websocket
 
 from .const import (CONFIG_CMD, DEFAULT_TIME, DISMISS_ALERT_CMD, START_CMD,
                     STATUS_CMD, STOP_CMD)
