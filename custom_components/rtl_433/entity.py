@@ -1,4 +1,4 @@
-"""Support for OpenEVSE entities."""
+"""Support for rtl_433 entities."""
 from __future__ import annotations
 
 from dataclasses import dataclass
