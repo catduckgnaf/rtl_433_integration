@@ -18,7 +18,7 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import (DataUpdateCoordinator,
                                                       UpdateFailed)
 
-from .const import DOMAIN, WS_IP, WS_PORT, NAME, PLATFORMS, WS_ID
+from .const import DOMAIN, WS_HOST, NAME, PLATFORMS, WS_ID
 from .rtl_433 import rtl433http
 
 _LOGGER = logging.getLogger(__name__)
@@ -29,11 +29,10 @@ async def async_setup(_hass, _config):
 async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry)-> bool:
     """Set up the platform."""
 
-    ws_ip = entry.data.get(WS_IP)
-    ws_port = entry.data.get(WS_PORT)
+    ws_host = entry.data.get(WS_HOST)
 
     linker = rtl433http()
-    linker.set_ip(ws_ip)
+    linker.set_ip(ws_host)
     try:
         gw_id = await linker.get_gw_id()
     except JSONDecodeError:
@@ -57,8 +56,7 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry)-> bool
     _LOGGER.debug(f"Found devices: {devices}")
 
     coordinator_conf = {
-        WS_IP: ws_ip,
-        WS_PORT: ws_port,
+        WS_HOST: ws_host,
         GW_ID: gw_id,
     }
     counter = 0
@@ -69,8 +67,7 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry)-> bool
         tap_list.append({
             NAME: device_name,
             TAP_ID: tap_id,
-            WS_IP: ws_ip,
-            WS_PORT: ws_port,
+            WS_HOST: ws_host,
             "coordinator": coordinator
         })
         counter = counter + 1
@@ -82,8 +79,7 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry)-> bool
     _LOGGER.debug(f"Setting volume unit to {vol_unit}")
 
     conf = {
-        WS_IP: ws_ip,
-        WS_PORT: ws_port,
+        WS_HOST: ws_host,
         GW_ID: gw_id,
         "taps": tap_list,
         "vol_unit": vol_unit,

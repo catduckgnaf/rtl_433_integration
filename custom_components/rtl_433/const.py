@@ -12,8 +12,7 @@ DEVICE_FREQ = "Frequency of RF Device"
 
 # Config Flow
 WS_ID = "ID of rtl_433 Webserver"
-WS_IP = "192.1688.0.100"
-WS_PORT = 9443
+WS_HOST= "192.1688.0.100:9443"
 DEFAULT_TIME = 15
 DEFAULT_NAME = "RTL_433 HTTP"
 NAME = "RTL_433 HTTP"

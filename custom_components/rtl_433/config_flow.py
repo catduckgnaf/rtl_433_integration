@@ -6,7 +6,7 @@ import secrets
 import voluptuous as vol
 from homeassistant import config_entries
 
-from .const import DEFAULT_NAME, DOMAIN, WS_PORT, WS_IP
+from .const import DEFAULT_NAME, DOMAIN, WS_PORT, WS_HOST
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ class RtlFlowHandler(config_entries.ConfigFlow):
 
         if user_input is not None:
             # Define filtered_user_input with a default value
-            expected_keys = ['WS_IP', 'WS_PORT']
+            expected_keys = ['WS_HOST']
             filtered_user_input = {key: user_input[key] for key in expected_keys if key in user_input}
 
             await self.async_set_unique_id(secrets.token_hex(8))
@@ -31,8 +31,7 @@ class RtlFlowHandler(config_entries.ConfigFlow):
             return self.async_create_entry(title=DEFAULT_NAME, data=filtered_user_input)
 
         new_user_input = {
-            vol.Required(WS_IP, description="Enter the IP address of the RTL_433 webserver", default=WS_IP): str,
-            vol.Required(WS_PORT, description="Enter the port number of the RTL_433 webserver", default=WS_PORT): int,
+            vol.Required(WS_HOST, description="Enter the IP address of the RTL_433 webserver", default=WS_HOST): str,
         }
 
         schema = vol.Schema(new_user_input)

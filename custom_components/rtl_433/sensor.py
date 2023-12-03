@@ -15,7 +15,7 @@ from homeassistant.util import slugify
 
 _LOGGER = logging.getLogger(__name__)
 
-from .const import DOMAIN, WS_IP, WS_PORT, MANUFACTURER, NAME
+from .const import DOMAIN, WS_HOST, MANUFACTURER, NAME
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -76,7 +76,7 @@ class Rtl433Sensor(CoordinatorEntity, SensorEntity):
             name=tap[NAME],
             manufacturer=MANUFACTURER,
             model=tap[TAP_ID],
-            configuration_url="http://" + [WS_IP] + ":" + [WS_PORT]
+            configuration_url="http://" + [WS_HOST]]
         )
 
     @property
