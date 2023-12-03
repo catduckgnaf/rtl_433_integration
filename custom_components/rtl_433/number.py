@@ -42,7 +42,7 @@ class RtlNumber(CoordinatorEntity, RestoreNumber):
         self._state = None
         self._name = protocol[NAME]
         self._id = self._name
-        self.protocol_id = protocol[protocol_ID]
+        self.protocol_id = protocol[PROTOCOL_ID]
         self.platform = "number"
         self._attr_unique_id = slugify(f"{DOMAIN}_{self.platform}_{self.protocol_id}_{number_suffix.replace(' ', '_')}")
         self._attr_native_min_value = 0
@@ -56,9 +56,9 @@ class RtlNumber(CoordinatorEntity, RestoreNumber):
                 (DOMAIN, protocol[protocol_ID])
             },
             name=protocol[NAME],
-            manufacturer=MANUFACTURER,
-            model=protocol[protocol_ID],
-            configuration_url="http://" + protocol[WS_HOST] + "/"
+            manufacturer=[MANUFACTURER],
+            model=protocol[PROTOCOL_ID],
+            configuration_url="http://" + [WS_HOST]
         )
 
         self._attrs = {}
