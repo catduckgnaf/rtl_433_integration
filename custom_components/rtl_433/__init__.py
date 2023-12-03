@@ -48,7 +48,7 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry)-> bool
 
     gateway_config = await linker.get_gw_config(gw_id)
     if "end_dev" not in gateway_config:
-        raise IntegrationError("Linktap Gateway needs to be updated")
+        raise IntegrationError("RTL_433 needs to be updated")
 
     devices = {
         "devs": gateway_config["end_dev"],
@@ -108,7 +108,7 @@ async def async_remove_config_entry_device(hass: core.HomeAssistant, entry: Conf
     device_registry(hass).async_remove_device(device.id)
     return True
 
-class LinktapCoordinator(DataUpdateCoordinator):
+class RtltapCoordinator(DataUpdateCoordinator):
     def __init__(self, hass, linker, conf, tap_id):
         super().__init__(
             hass,

@@ -21,22 +21,14 @@ class RtlFlowHandler(config_entries.ConfigFlow):
 
         errors = None
 
-        # Define filtered_user_input with a default value
-        filtered_user_input = {}
-
         if user_input is not None:
-            _LOGGER.debug(f"Received user input: {user_input}")
-
-            # Filter out any extra keys from user_input
-            filtered_user_input = {
-                key: user_input[key] for key in ['WS_IP', 'WS_PORT']
-            }
+            # Define filtered_user_input with a default value
+            expected_keys = ['WS_IP', 'WS_PORT']
+            filtered_user_input = {key: user_input[key] for key in expected_keys if key in user_input}
 
             await self.async_set_unique_id(secrets.token_hex(8))
             self._abort_if_unique_id_configured()
             return self.async_create_entry(title=DEFAULT_NAME, data=filtered_user_input)
-
-        _LOGGER.debug(f"Filtered user input: {filtered_user_input}")
 
         new_user_input = {
             vol.Required(WS_IP, description="Enter the IP address of the RTL_433 webserver", default=WS_IP): str,
