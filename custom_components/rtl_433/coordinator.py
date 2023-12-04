@@ -32,6 +32,8 @@ class Rtl433DataUpdateCoordinator(DataUpdateCoordinator):
             update_interval=timedelta(minutes=60),
         )
 
+        ##data from coordinator 
+    self.coordinator.data['id']
     async def _async_update_data(self):
         """Update data via library."""
         try:
