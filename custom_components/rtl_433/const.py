@@ -16,6 +16,15 @@ PLATFORMS = ['number', 'binary_sensor', 'sensor', 'switch']
 MANUFACTURER = "RTL_SDR"
 from enum import Enum
 
+class BinarySensorDeviceClass(Enum):
+    BATTERY = "battery"
+    POWER = "power"
+    MOTION = "motion"
+    TAMPER = "tamper"
+    MOISTURE = "moisture"
+    DOOR = "door"
+    SAFETY = "safety"
+    
 class SensorDeviceClass(Enum):
     TIMESTAMP = "timestamp"
     BATTERY = "battery"
@@ -58,7 +67,26 @@ class RTL433SensorEntityDescription:
         self.value_template = value_template
         self.state_class = state_class
         self.entity_category = entity_category
-
+        
+class BinarySensorEntityDescription:
+    def __init__(
+        self,
+        name,
+        key,
+        device_class=None,
+        unit_of_measurement=None,
+        value_template=None,
+        state_class=None,
+        entity_category=None,
+    ):
+        self.name = name
+        self.key = key
+        self.device_class = device_class
+        self.unit_of_measurement = unit_of_measurement
+        self.value_template = value_template
+        self.state_class = state_class
+        self.entity_category = entity_category
+        
 # Protocols
 PROTOCOLS = {
         1: "Silvercrest Remote Control",
@@ -258,13 +286,12 @@ PROTOCOLS = {
         250: "Schou 72543 Day Rain Gauge"
     }
 # key: name
-BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
+BINARY_SENSORS: [dict[str, BinarySensorEntityDescription]] = {
     "tamper": BinarySensorEntityDescription(
         name="Tamper",
         key="tamper",
         device_class=BinarySensorDeviceClass.TAMPER,
-        entity_category=EntityCategory.DIAGNOSTIC,
-        entity_registry_enabled_default=False,
+        entity_category=EntityCategory.DIAGNOSTIC
     ),
     "detect_wet": BinarySensorEntityDescription(
         name="Water Sensor",
@@ -275,7 +302,9 @@ BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
         name="Door Closed",
         key="Door",
         device_class=BinarySensorDeviceClass.DOOR,
+
     ),
+
     "alarm": BinarySensorEntityDescription(
         name="Alarm",
         key="alarm",
