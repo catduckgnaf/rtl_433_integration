@@ -216,7 +216,7 @@ PROTOCOLS = {
     }
 
 # key: name
-BINARY_SENSORS: Final[dict[str, RTL433BinarySensorEntityDescription]] = {
+BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
     "tamper": BinarySensorEntityDescription(
         name="Tamper",
         key="tamper",
@@ -231,7 +231,7 @@ BINARY_SENSORS: Final[dict[str, RTL433BinarySensorEntityDescription]] = {
     ),
     "closed": BinarySensorEntityDescription(
         name="Door Closed",
-        key="Door"
+        key="Door",
         device_class=BinarySensorDeviceClass.DOOR,
     ),
     "alarm": BinarySensorEntityDescription(
@@ -241,313 +241,270 @@ BINARY_SENSORS: Final[dict[str, RTL433BinarySensorEntityDescription]] = {
     ),
 }
 
-# Sensor Types
-SENSORS = {
-    "time": {
-        "device_type": "sensor",
-        "object_suffix": "UTC",
-        "config": {
-            "device_class": "timestamp",
-            "name": "Timestamp",
-            "entity_category": "diagnostic",
-            "enabled_by_default": False,
-            "icon": "mdi:clock-in"
-        }
-    },
-    "battery_ok": {
-        "device_type": "sensor",
-        "object_suffix": "B",
-        "config": {
-            "device_class": "battery",
-            "name": "Battery",
-            "unit_of_measurement": "%",
-            "value_template": "{{ float(value) * 99 + 1 }}",
-            "state_class": "measurement",
-            "entity_category": "diagnostic"
-        }
-    },
-    "humidity": {
-        "device_type": "sensor",
-        "object_suffix": "H",
-        "config": {
-            "device_class": "humidity",
-            "name": "Humidity",
-            "unit_of_measurement": "%",
-            "value_template": "{{ value|float }}",
-            "state_class": "measurement"
-        }
-    },
-    "humidity_1": {
-        "device_type": "sensor",
-        "object_suffix": "H1",
-        "config": {
-            "device_class": "humidity",
-            "name": "Humidity 1",
-            "unit_of_measurement": "%",
-            "value_template": "{{ value|float }}",
-            "state_class": "measurement"
-        }
-    },
-    "humidity_2": {
-        "device_type": "sensor",
-        "object_suffix": "H2",
-        "config": {
-            "device_class": "humidity",
-            "name": "Humidity 2",
-            "unit_of_measurement": "%",
-            "value_template": "{{ value|float }}",
-            "state_class": "measurement"
-        }
-    },
-    "moisture": {
-        "device_type": "sensor",
-        "object_suffix": "H",
-        "config": {
-            "device_class": "humidity",
-            "name": "Moisture",
-            "unit_of_measurement": "%",
-            "value_template": "{{ value|float }}",
-            "state_class": "measurement"
-        }
-    },
-    "pressure_hPa": {
-        "device_type": "sensor",
-        "object_suffix": "P",
-        "config": {
-            "device_class": "pressure",
-            "name": "Pressure",
-            "unit_of_measurement": "hPa",
-            "value_template": "{{ value|float }}",
-            "state_class": "measurement"
-        }
-    },
-    "pressure_kPa": {
-        "device_type": "sensor",
-        "object_suffix": "P",
-        "config": {
-            "device_class": "pressure",
-            "name": "Pressure",
-            "unit_of_measurement": "kPa",
-            "value_template": "{{ value|float }}",
-            "state_class": "measurement"
-        }
-    },
-    "wind_speed_km_h": {
-        "device_type": "sensor",
-        "object_suffix": "WS",
-        "config": {
-            "device_class": "wind_speed",
-            "name": "Wind Speed",
-            "unit_of_measurement": "km/h",
-            "value_template": "{{ value|float }}",
-            "state_class": "measurement"
-        }
-    },
-    "wind_avg_mi_h": {
-        "device_type": "sensor",
-        "object_suffix": "WS",
-        "config": {
-            "device_class": "wind_speed",
-            "name": "Wind Speed",
-            "unit_of_measurement": "mi/h",
-            "value_template": "{{ value|float }}",
-            "state_class": "measurement"
-        }
-    },
+    # key: name
+    SENSORS: Final[dict[str, RTL433SensorEntityDescription]] = {
+        "time": RTL433SensorEntityDescription(
+            name="Timestamp",
+            key="time",
+            device_class=SensorDeviceClass.TIMESTAMP,
+            entity_category=EntityCategory.DIAGNOSTIC,
+            entity_registry_enabled_default=False,
+        ),
+        "battery_ok": RTL433SensorEntityDescription(
+            name="Battery",
+            key="battery_ok",
+            device_class=SensorDeviceClass.BATTERY,
+            unit_of_measurement="%",
+            value_template="{{ float(value) * 99 + 1 }}",
+            state_class="measurement",
+            entity_category="diagnostic",
+        ),
+        "humidity": RTL433SensorEntityDescription(
+            name="Humidity",
+            key="humidity",
+            device_class=SensorDeviceClass.HUMIDITY,
+            unit_of_measurement="%",
+            value_template="{{ value|float }}",
+            state_class="measurement",
+        ),
+        "humidity_1": RTL433SensorEntityDescription(
+            name="Humidity 1",
+            key="humidity_1",
+            device_class=SensorDeviceClass.HUMIDITY,
+            unit_of_measurement="%",
+            value_template="{{ value|float }}",
+            state_class="measurement",
+        ),
+        "humidity_2": RTL433SensorEntityDescription(
+            name="Humidity 2",
+            key="humidity_2",
+            device_class=SensorDeviceClass.HUMIDITY,
+            unit_of_measurement="%",
+            value_template="{{ value|float }}",
+            state_class="measurement",
+        ),
+        "moisture": RTL433SensorEntityDescription(
+            name="Moisture",
+            key="moisture",
+            device_class=SensorDeviceClass.HUMIDITY,
+            unit_of_measurement="%",
+            value_template="{{ value|float }}",
+            state_class="measurement",
+        ),
+        "pressure_hPa": RTL433SensorEntityDescription(
+            name="Pressure",
+            key="pressure_hPa",
+            device_class=SensorDeviceClass.PRESSURE,
+            unit_of_measurement="hPa",
+            value_template="{{ value|float }}",
+            state_class="measurement",
+        ),
+        # BEGIN: be15d9bcejpp
+        "pressure_kPa": RTL433SensorEntityDescription(
+            name="Pressure",
+            key="pressure_kPa",
+            device_class=SensorDeviceClass.PRESSURE,
+            unit_of_measurement="kPa",
+            value_template="{{ value|float }}",
+            state_class="measurement",
+        ),
+        "wind_speed_km_h": RTL433SensorEntityDescription(
+            name="Wind Speed",
+            key="wind_speed_km_h",
+            device_class=SensorDeviceClass.WIND_SPEED,
+            unit_of_measurement="km/h",
+            value_template="{{ value|float }}",
+            state_class="measurement",
+        ),
+        "wind_avg_mi_h": RTL433SensorEntityDescription(
+            name="Wind Speed",
+            key="wind_avg_mi_h",
+            device_class=SensorDeviceClass.WIND_SPEED,
+            unit_of_measurement="mi/h",
+            value_template="{{ value|float }}",
+            state_class="measurement",
+        ),
+        "wind_avg_m_s": RTL433SensorEntityDescription(
+            name="Wind Speed",
+            key="wind_avg_m_s",
+            device_class=SensorDeviceClass.WIND_SPEED,
+            unit_of_measurement="m/s",
+            value_template="{{ value|float }}",
+            state_class="measurement",
+        )
+        # END: be15d9bcejpp
+    }
 
-    "wind_avg_m_s": {
-        "device_type": "sensor",
-        "object_suffix": "WS",
-        "config": {
-            "device_class": "wind_speed",
-            "name": "Wind Average",
-            "unit_of_measurement": "km/h",
-            "value_template": "{{ (float(value|float) * 3.6) | round(2) }}",
-            "state_class": "measurement"
-        }
-    },
+    "pressure_kPa": RTL433SensorEntityDescription(
+        name="Pressure",
+        key="pressure_kPa",
+        device_class=SensorDeviceClass.PRESSURE,
+        unit_of_measurement="kPa",
+        value_template="{{ value|float }}",
+        state_class="measurement",
+    )
+    "wind_speed_km_h": RTL433SensorEntityDescription(
+        name="Wind Speed",
+        key="wind_speed_km_h",
+        device_class=SensorDeviceClass.WIND_SPEED,
+        unit_of_measurement="km/h",
+        value_template="{{ value|float }}",
+        state_class="measurement",
+    )
+    "wind_avg_mi_h": RTL433SensorEntityDescription(
+        name="Wind Speed",
+        key="wind_avg_mi_h",
+        device_class=SensorDeviceClass.WIND_SPEED,
+        unit_of_measurement="mi/h",
+        value_template="{{ value|float }}",
+        state_class="measurement",
+    )
+    "wind_vg_m_s": RTL433SensorEntityDescription(
+        name="Wind Average",
+        key="wind_avg_m_s",
+        device_class=SensorDeviceClass.WIND_SPEED,
+        unit_of_measurement="km/h",
+        value_template="{{ (float(value|float) * 3.6) | round(2) }}",
+        state_class="measurement",
+    )
+    "wind_speed_m_s": RTL433SensorEntityDescription(
+        name="Wind Speed",
+        key="wind_speed_m_s",
+        device_class=SensorDeviceClass.WIND_SPEED,
+        unit_of_measurement="km/h",
+        value_template="{{ float(value|float) * 3.6 }}",
+        state_class="measurement",
+    )
+    "gust_speed_km_h": RTL433SensorEntityDescription(
+        name="Gust Speed",
+        key="gust_speed_km_h",
+        device_class=SensorDeviceClass.WIND_SPEED,
+        unit_of_measurement="km/h",
+        value_template="{{ value|float }}",
+        state_class="measurement",
+    )
+    "noise": RTL433SensorEntityDescription(
+        name="Noise",
+        key="noise",
+        device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+        unit_of_measurement="dB",
+        value_template="{{ value|float|round(2) }}",
+        state_class="measurement",
+        entity_category="diagnostic",
+    )
+    "signal": RTL433SensorEntityDescription(
+        name="Signal Strength",
+        key="signal",
+        device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+        unit_of_measurement="dB",
+        value_template="{{ value|float|round(2) }}",
+        state_class="measurement",
+        entity_category="diagnostic",
+    )
+    "uv": RTL433SensorEntityDescription(
+        name="UV Index",
+        key="uv",
+        unit_of_measurement="UV Index",
+        value_template="{{ value|int }}",
+        state_class="measurement",
+    )
+    "lux": RTL433SensorEntityDescription(
+        name="Outside Luminance",
+        key="lux",
+        device_class=SensorDeviceClass.ILLUMINANCE,
+        unit_of_measurement="lx",
+        value_template="{{ value|int }}",
+        state_class="measurement",
+    )
+    "uvi": RTL433SensorEntityDescription(
+        name="UV Index",
+        key="uvi",
+        unit_of_measurement="UV Index",
+        value_template="{{ value|int }}",
+        state_class="measurement",
+    )
+    "power_W": RTL433SensorEntityDescription(
+        name="Power",
+        key="power_W",
+        device_class=SensorDeviceClass.POWER,
+        unit_of_measurement="W",
+        value_template="{{ value|float }}",
+        state_class="measurement",
+    )
+    "depth_cm": RTL433SensorEntityDescription(
+        name="Depth",
+        key="depth_cm",
+        unit_of_measurement="cm",
+        value_template="{{ value|float }}",
+        state_class="measurement",
+    )
+    "rain_mm": RTL433SensorEntityDescription(
+        name="Rain Total",
+        key="rain_mm",
+        device_class=SensorDeviceClass.PRECIPITATION,
+        unit_of_measurement="mm",
+        value_template="{{ value|float|round(2) }}",
+        state_class="total_increasing",
+    )
+    "rain_rate_mm_h": RTL433SensorEntityDescription(
+        name="Rain Rate",
+        key="rain_rate_mm_h",
+        device_class=SensorDeviceClass.PRECIPITATION_INTENSITY,
+        unit_of_measurement="mm/h",
+        value_template="{{ value|float }}",
+        state_class="measurement",
+    )
+    "rain_in": RTL433SensorEntityDescription(
+        name="Rain Total",
+        key="rain_in",
+        device_class=SensorDeviceClass.PRECIPITATION,
+        unit_of_measurement="mm",
+        value_template="{{ (float(value|float) * 25.4) | round(2) }}",
+        state_class="total_increasing",
+    )
+    "strike_distance": RTL433SensorEntityDescription(
+        name="Lightning Distance",
+        key="strike_distance",
+        unit_of_measurement="mi",
+        value_template="{{ value|int }}",
+        state_class="measurement",
+    )
+    "motion": RTL433SensorEntityDescription(
+        name="Motion",
+        key="motion",
+        device_class=SensorDeviceClass.MOTION,
+    )
+    "light_level": RTL433SensorEntityDescription(
+        name="Light Level",
+        key="light_level",
+        device_class=SensorDeviceClass.ILLUMINANCE,
+        unit_of_measurement="lux",
+    )
+    "sound_level": RTL433SensorEntityDescription(
+        name="Sound Level",
+        key="sound_level",
+        device_class=SensorDeviceClass.SOUND_PRESSURE,
+        unit_of_measurement="dB",
+    )
+    "co2": RTL433SensorEntityDescription(
+        name="CO2 Level",
+        key="co2",
+        device_class=SensorDeviceClass.CARBON_DIOXIDE,
+        unit_of_measurement="ppm",
+    )
+    "voltage": RTL433SensorEntityDescription(
+        name="Voltage",
+        key="voltage",
+        device_class=SensorDeviceClass.VOLTAGE,
+        unit_of_measurement="V",
+    )
+    "current": RTL433SensorEntityDescription(
+        name="Current",
+        key="current",
+        device_class=SensorDeviceClass.CURRENT,
+        unit_of_measurement="A",
+    )
 
-    "wind_speed_m_s": {
-        "device_type": "sensor",
-        "object_suffix": "WS",
-        "config": {
-            "device_class": "wind_speed",
-            "name": "Wind Speed",
-            "unit_of_measurement": "km/h",
-            "value_template": "{{ float(value|float) * 3.6 }}",
-            "state_class": "measurement"
-        }
-    },
-
-    "gust_speed_km_h": {
-        "device_type": "sensor",
-        "object_suffix": "GS",
-        "config": {
-            "device_class": "wind_speed",
-            "name": "Gust Speed",
-            "unit_of_measurement": "km/h",
-            "value_template": "{{ value|float }}",
-            "state_class": "measurement"
-        }
-    },
-  "noise": {
-        "device_type": "sensor",
-        "object_suffix": "noise",
-        "config": {
-            "device_class": "signal_strength",
-            "unit_of_measurement": "dB",
-            "value_template": "{{ value|float|round(2) }}",
-            "state_class": "measurement",
-            "entity_category": "diagnostic"
-        }
-    },
-    "signal": {
-        "device_type": "sensor",
-        "object_suffix": "signal",
-        "config": {
-            "device_class": "signal_strength",
-            "unit_of_measurement": "dB",
-            "value_template": "{{ value|float|round(2) }}",
-            "state_class": "measurement",
-            "entity_category": "diagnostic"
-        }
-           },
-
-    "uv": {
-        "device_type": "sensor",
-        "object_suffix": "uv",
-        "config": {
-            "name": "UV Index",
-            "unit_of_measurement": "UV Index",
-            "value_template": "{{ value|int }}",
-            "state_class": "measurement"
-        }
-    },
-    "lux": {
-        "device_type": "sensor",
-        "object_suffix": "lux",
-        "config": {
-            "device_class": "illuminance",
-            "name": "Outside Luminance",
-            "unit_of_measurement": "lx",
-            "value_template": "{{ value|int }}",
-            "state_class": "measurement"
-        }
-    },
-  "uvi": {
-        "device_type": "sensor",
-        "object_suffix": "uvi",
-        "config": {
-            "name": "UV Index",
-            "unit_of_measurement": "UV Index",
-            "value_template": "{{ value|int }}",
-            "state_class": "measurement"
-        }
-    },
-        "power_W": {
-        "device_type": "sensor",
-        "object_suffix": "watts",
-        "config": {
-            "device_class": "power",
-            "name": "Power",
-            "unit_of_measurement": "W",
-            "value_template": "{{ value|float }}",
-            "state_class": "measurement"
-        }
-    },
-
-    "depth_cm": {
-        "device_type": "sensor",
-        "object_suffix": "D",
-        "config": {
-            "name": "Depth",
-            "unit_of_measurement": "cm",
-            "value_template": "{{ value|float }}",
-            "state_class": "measurement"
-        }
-    },
-    "rain_mm": {
-        "device_type": "sensor",
-        "object_suffix": "RT",
-        "config": {
-            "device_class": "precipitation",
-            "name": "Rain Total",
-            "unit_of_measurement": "mm",
-            "value_template": "{{ value|float|round(2) }}",
-            "state_class": "total_increasing"
-        }
-    },
-
-    "rain_rate_mm_h": {
-        "device_type": "sensor",
-        "object_suffix": "RR",
-        "config": {
-            "device_class": "precipitation_intensity",
-            "name": "Rain Rate",
-            "unit_of_measurement": "mm/h",
-            "value_template": "{{ value|float }}",
-            "state_class": "measurement"
-        }
-    },
-
-    "rain_in": {
-        "device_type": "sensor",
-        "object_suffix": "RT",
-        "config": {
-            "device_class": "precipitation",
-            "name": "Rain Total",
-            "unit_of_measurement": "mm",
-            "value_template": "{{ (float(value|float) * 25.4) | round(2) }}",
-            "state_class": "total_increasing"
-        }
-    }, 
-    "strike_distance": {
-        "device_type": "sensor",
-        "object_suffix": "stdist",
-        "config": {
-            "name": "Lightning Distance",
-            "unit_of_measurement": "mi",
-            "value_template": "{{ value|int }}",
-            "state_class": "measurement"
-        }
-    },
-}
-
-
-
-
-# Device Automations
-DEVICE_AUTOMATIONS = {
-    "channel": {
-        "device_type": "device_automation",
-        "object_suffix": "CH",
-        "config": {
-            "automation_type": "trigger",
-            "type": "button_short_release",
-            "subtype": "button_1",
-        }
-    },
-    "button": {
-        "device_type": "device_automation",
-        "object_suffix": "BTN",
-        "config": {
-            "automation_type": "trigger",
-            "type": "button_short_release",
-            "subtype": "button_1",
-        }
-    },
-}
-
-# Switches
-SWITCHES = {
-    "example_switch": {
-        "device_type": "switch",
-        "config": {
-            "name": "Example Switch",
-            # Add other switch configuration options
-        }
-    },
-}
 
 # Numbers
 NUMBERS = {
@@ -569,7 +526,7 @@ secret_knock_mappings = [
             "type": "button_short_release",
             "subtype": "button_1",
             "payload": 0,
-        }
+        },
     },
     {
         "device_type": "device_automation",
@@ -579,6 +536,6 @@ secret_knock_mappings = [
             "type": "button_triple_press",
             "subtype": "button_1",
             "payload": 1,
-        }
+        },
     },
 ]
