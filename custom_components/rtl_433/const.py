@@ -11,10 +11,53 @@ DOMAIN = "rtl_433"
 DEVICE_ID = "ID of Individual RF Device"
 DEVICE_MODEL = "Model of RF Device"
 DEVICE_FREQ = "Frequency of RF Device"
-
 # Attributes
 PLATFORMS = ['number', 'binary_sensor', 'sensor', 'switch']
 MANUFACTURER = "RTL_SDR"
+from enum import Enum
+
+class SensorDeviceClass(Enum):
+    TIMESTAMP = "timestamp"
+    BATTERY = "battery"
+    HUMIDITY = "humidity"
+    PRESSURE = "pressure"
+    WIND_SPEED = "wind_speed"
+    SIGNAL_STRENGTH = "signal_strength"
+    ILLUMINANCE = "illuminance"
+    POWER = "power"
+    MOTION = "motion"
+    SOUND_PRESSURE = "sound_pressure"
+    CARBON_DIOXIDE = "carbon_dioxide"
+    VOLTAGE = "voltage"
+    CURRENT = "current"
+    PRECIPITATION = "precipitation"
+    PRECIPITATION_INTENSITY = "precipitation_intensity"
+
+class EntityCategory(Enum):
+    DIAGNOSTIC = "diagnostic"
+
+class StateClass(Enum):
+    MEASUREMENT = "measurement"
+    TOTAL_INCREASING = "total_increasing"
+
+class RTL433SensorEntityDescription:
+    def __init__(
+        self,
+        name,
+        key,
+        device_class=None,
+        unit_of_measurement=None,
+        value_template=None,
+        state_class=None,
+        entity_category=None,
+    ):
+        self.name = name
+        self.key = key
+        self.device_class = device_class
+        self.unit_of_measurement = unit_of_measurement
+        self.value_template = value_template
+        self.state_class = state_class
+        self.entity_category = entity_category
 
 # Protocols
 PROTOCOLS = {
@@ -30,8 +73,8 @@ PROTOCOLS = {
         16: "AlectoV1 Weather Sensor (Alecto WS3500 WS4500 Ventus W155/W044 Oregon)",
         17: "Cardin S466-TX2",
         18: "Fine Offset Electronics, WH2, WH5, Telldus Temperature/Humidity/Rain Sensor",
-        19: "Nexus, FreeTec NC-7345, NX-3980, Solight TE82S, TFA 30.3209 temperature/humidity sensor",
-        20: "Ambient Weather F007TH, TFA 30.3208.02, SwitchDocLabs F016TH temperature sensor",
+        19: "Nexus, FreeTec NC-7345 temperature/humidity sensor",
+        20: "Ambient Weather F007TH, F016TH temperature sensor",
         21: "Calibeur RF-104 Sensor",
         22: "X10 RF",
         23: "DSC Security Contact",
@@ -47,7 +90,7 @@ PROTOCOLS = {
         36: "Efergy e2 classic",
         38: "Generic temperature sensor 1",
         39: "WG-PB12V1 Temperature Sensor",
-        40: "Acurite 592TXR Temp/Humidity, 592TX Temp, 5n1 Weather Station, 6045 Lightning, 899 Rain, 3N1, Atlas",
+        40: "Acurite 592TXR Temp/Humidity, Lightning, 899 Rain, 3N1, Atlas",
         41: "Acurite 986 Refrigerator / Freezer Thermometer",
         42: "HIDEKI TS04 Temperature, Humidity, Wind and Rain Sensor",
         43: "Watchman Sonic / Apollo Ultrasonic / Beckett Rocket oil tank monitor",
@@ -74,12 +117,12 @@ PROTOCOLS = {
         69: "Fine Offset WH1050 Weather Station",
         70: "Honeywell Door/Window Sensor, 2Gig DW10/DW11, RE208 repeater",
         71: "Maverick ET-732/733 BBQ Sensor",
-        73: "LaCrosse TX141-Bv2, TX141TH-Bv2, TX141-Bv3, TX141W, TX145wsdth, (TFA, ORIA) sensor",
+        73: "LaCrosse TX141-Bv2, TX141TH-Bv2, TX141-Bv3, TX141W, TX145wsdth, sensor",
         74: "Acurite 00275rm,00276rm Temp/Humidity with optional probe",
         75: "LaCrosse TX35DTH-IT, TFA Dostmann 30.3155 Temperature/Humidity sensor",
         76: "LaCrosse TX29IT, TFA Dostmann 30.3159.IT Temperature sensor",
         77: "Vaillant calorMatic VRT340f Central Heating Control",
-        78: "Fine Offset Electronics, WH25, WH32B, WH24, WH65B, HP1000, Misol WS2320 Temperature/Humidity/Pressure Sensor",
+        78: "Fine Offset Electronics, WH25, Temperature/Humidity/Pressure Sensor",
         79: "Fine Offset Electronics, WH0530 Temperature/Rain Sensor",
         80: "IBIS beacon",
         81: "Oil Ultrasonic STANDARD FSK",
@@ -119,7 +162,7 @@ PROTOCOLS = {
         131: "Microchip HCS200/HCS300 KeeLoq Hopping Encoder based remotes",
         132: "TFA Dostmann 30.3196 T/H outdoor sensor",
         133: "Rubicson 48659 Thermometer",
-        134: "AOK Weather Station rebrand Holman Industries iWeather WS5029, Conrad AOK-5056, Optex 990018",
+        134: "AOK Weather Station, iWeather WS5029, Conrad AOK-5056, Optex 990018",
         135: "Philips outdoor temperature sensor (type AJ7010)",
         136: "ESIC EMT7110 power meter",
         137: "Globaltronics QUIGG GT-TMBBQ-05",
@@ -127,7 +170,7 @@ PROTOCOLS = {
         139: "Norgo NGE101",
         140: "Elantra2012 TPMS",
         141: "Auriol HG02832, HG05124A-DCF, Rubicson 48957 temperature/humidity sensor",
-        142: "Fine Offset Electronics/ECOWITT WH51, SwitchDoc Labs SM23 Soil Moisture Sensor",
+        142: "Fine Offset Electronics/ECOWITT WH51, SwitchDoc Soil Moisture Sensor",
         143: "Holman Industries iWeather WS5029 weather station (older PWM)",
         144: "TBH weather sensor",
         145: "WS2032 weather station",
@@ -140,10 +183,10 @@ PROTOCOLS = {
         159: "Insteon",
         170: "LaCrosse Technology View LTV-WR1 Multi Sensor",
         171: "LaCrosse Technology View LTV-TH Thermo/Hygro Sensor",
-        172: "Bresser Weather Center 6-in-1, 7-in-1 indoor, soil, new 5-in-1, 3-in-1 wind gauge, Froggit WH6000, Ventus C8488A",
+        172: "Bresser Weather Center 3-in-1 wind gauge, Froggit WH6000, Ventus C8488A",
         173: "Bresser Weather Center 7-in-1, Air Quality PM2.5 / PM10",
         174: "EcoDHOME Smart Socket and MCEE Solar monitor",
-        175: "LaCrosse Technology View LTV-R1, LTV-R3 Rainfall Gauge, LTV-W1/W2 Wind Sensor",
+        175: "LaCrosse Technology View LTV-R1, LTV-R3 Rainfall Gauge, LTV-W1/W2 Win",
         176: "BlueLine Innovations Power Cost Monitor",
         177: "Burnhard BBQ thermometer",
         178: "Security+ (Keyfob)",
@@ -177,7 +220,7 @@ PROTOCOLS = {
         212: "Renault 0435R TPMS",
         213: "Fine Offset Electronics WS80 weather station",
         214:  "EMOS E6016 weatherstation with DCF77",
-        215: "Emax W6, rebrand Altronics x70634 Newentor Q9, Otio 810025, Protmex PT3390A, Jula Marquant 014331/32",
+        215: "Emax W6, rebrand Altronics x70634 Newentor Q9, Otio 810025",
         216:  "ANT and ANT+ devices",
         217:  "EMOS E6016 rain gauge",
         218:  "Microchip HCS200/HCS300 KeeLoq Hopping Encoder based remotes (FSK)",
@@ -215,6 +258,51 @@ PROTOCOLS = {
         250: "Schou 72543 Day Rain Gauge"
     }
 
+from enum import Enum
+
+class SensorDeviceClass(Enum):
+    TIMESTAMP = "timestamp"
+    BATTERY = "battery"
+    HUMIDITY = "humidity"
+    PRESSURE = "pressure"
+    WIND_SPEED = "wind_speed"
+    SIGNAL_STRENGTH = "signal_strength"
+    ILLUMINANCE = "illuminance"
+    POWER = "power"
+    MOTION = "motion"
+    SOUND_PRESSURE = "sound_pressure"
+    CARBON_DIOXIDE = "carbon_dioxide"
+    VOLTAGE = "voltage"
+    CURRENT = "current"
+    PRECIPITATION = "precipitation"
+    PRECIPITATION_INTENSITY = "precipitation_intensity"
+
+class EntityCategory(Enum):
+    DIAGNOSTIC = "diagnostic"
+
+class StateClass(Enum):
+    MEASUREMENT = "measurement"
+    TOTAL_INCREASING = "total_increasing"
+
+class RTL433SensorEntityDescription:
+    def __init__(
+        self,
+        name,
+        key,
+        device_class=None,
+        unit_of_measurement=None,
+        value_template=None,
+        state_class=None,
+        entity_category=None,
+    ):
+        self.name = name
+        self.key = key
+        self.device_class = device_class
+        self.unit_of_measurement = unit_of_measurement
+        self.value_template = value_template
+        self.state_class = state_class
+        self.entity_category = entity_category
+
 # key: name
 BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
     "tamper": BinarySensorEntityDescription(
@@ -240,323 +328,6 @@ BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
         device_class=BinarySensorDeviceClass.SAFETY,
     ),
 }
-SENSORS: Final[dict[str, RTL433SensorEntityDescription]] = {
-    "time": RTL433SensorEntityDescription(
-            name="Timestamp",
-            key="time",
-            device_class=SensorDeviceClass.TIMESTAMP,
-            entity_category=EntityCategory.DIAGNOSTIC,
-            entity_registry_enabled_default=False,
-    ),
-    "battery_ok": RTL433SensorEntityDescription(
-            name="Battery",
-            key="battery_ok",
-            device_class=SensorDeviceClass.BATTERY,
-            unit_of_measurement="%",
-            value_template="{{ float(value) * 99 + 1 }}",
-            state_class="measurement",
-            entity_category="diagnostic",
-        ),
-    "humidity": RTL433SensorEntityDescription(
-            name="Humidity",
-            key="humidity",
-            device_class=SensorDeviceClass.HUMIDITY,
-            unit_of_measurement="%",
-            value_template="{{ value|float }}",
-            state_class="measurement",
-        ),
-    "humidity_1": RTL433SensorEntityDescription(
-            # Add your desired changes here
-        ),
-    
-     "time": RTL433SensorEntityDescription(
-            name="Timestamp",
-            key="time",
-            device_class=SensorDeviceClass.TIMESTAMP,
-            entity_category=EntityCategory.DIAGNOSTIC,
-            entity_registry_enabled_default=False,
-        ),
-
-
-      "battery_ok": RTL433SensorEntityDescription(
-            name="Battery",
-            key="battery_ok",
-            device_class=SensorDeviceClass.BATTERY,
-            unit_of_measurement="%",
-            value_template="{{ float(value) * 99 + 1 }}",
-            state_class="measurement",
-            entity_category="diagnostic",
-        ),
-    "humidity": RTL433SensorEntityDescription(
-            name="Humidity",
-            key="humidity",
-            device_class=SensorDeviceClass.HUMIDITY,
-            unit_of_measurement="%",
-            value_template="{{ value|float }}",
-            state_class="measurement",
-        ),
-    "humidity_1": RTL433SensorEntityDescription(
-            name="Humidity 1",
-            key="humidity_1",
-            device_class=SensorDeviceClass.HUMIDITY,
-            unit_of_measurement="%",
-            value_template="{{ value|float }}",
-            state_class="measurement",
-        ),
-    
-    "time": RTL433SensorEntityDescription(
-            name="Timestamp",
-            key="time",
-            device_class=SensorDeviceClass.TIMESTAMP,
-            entity_category=EntityCategory.DIAGNOSTIC,
-            entity_registry_enabled_default=False,
-        ),
-    "battery_ok": RTL433SensorEntityDescription(
-            name="Battery",
-            key="battery_ok",
-            device_class=SensorDeviceClass.BATTERY,
-            unit_of_measurement="%",
-            value_template="{{ float(value) * 99 + 1 }}",
-            state_class="measurement",
-            entity_category="diagnostic",
-        ),
-    "humidity": RTL433SensorEntityDescription(
-            name="Humidity",
-            key="humidity",
-            device_class=SensorDeviceClass.HUMIDITY,
-            unit_of_measurement="%",
-            value_template="{{ value|float }}",
-            state_class="measurement",
-        ),
-
-    "humidity_1": RTL433SensorEntityDescription(
-            name="Humidity 1",
-            key="humidity_1",
-            device_class=SensorDeviceClass.HUMIDITY,
-            unit_of_measurement="%",
-            value_template="{{ value|float }}",
-            state_class="measurement",
-        ),
-    "humidity_2": RTL433SensorEntityDescription(
-            name="Humidity 2",
-            key="humidity_2",
-            device_class=SensorDeviceClass.HUMIDITY,
-            unit_of_measurement="%",
-            value_template="{{ value|float }}",
-            state_class="measurement",
-        ),
-    "moisture": RTL433SensorEntityDescription(
-            name="Moisture",
-            key="moisture",
-            device_class=SensorDeviceClass.HUMIDITY,
-            unit_of_measurement="%",
-            value_template="{{ value|float }}",
-            state_class="measurement",
-        ),
-    "pressure_hPa": RTL433SensorEntityDescription(
-            name="Pressure",
-            key="pressure_hPa",
-            device_class=SensorDeviceClass.PRESSURE,
-            unit_of_measurement="hPa",
-            value_template="{{ value|float }}",
-            state_class="measurement",
-        ),
-        # BEGIN: be15d9bcejpp
-    "pressure_kPa": RTL433SensorEntityDescription(
-            name="Pressure",
-            key="pressure_kPa",
-            device_class=SensorDeviceClass.PRESSURE,
-            unit_of_measurement="kPa",
-            value_template="{{ value|float }}",
-            state_class="measurement",
-        ),
-    "wind_speed_km_h": RTL433SensorEntityDescription(
-            name="Wind Speed",
-            key="wind_speed_km_h",
-            device_class=SensorDeviceClass.WIND_SPEED,
-            unit_of_measurement="km/h",
-            value_template="{{ value|float }}",
-            state_class="measurement",
-        ),
-    "wind_avg_mi_h": RTL433SensorEntityDescription(
-            name="Wind Speed",
-            key="wind_avg_mi_h",
-            device_class=SensorDeviceClass.WIND_SPEED,
-            unit_of_measurement="mi/h",
-            value_template="{{ value|float }}",
-            state_class="measurement",
-        ),
-    "wind_avg_m_s": RTL433SensorEntityDescription(
-            name="Wind Speed",
-            key="wind_avg_m_s",
-            device_class=SensorDeviceClass.WIND_SPEED,
-            unit_of_measurement="m/s",
-            value_template="{{ value|float }}",
-            state_class="measurement",
-        ),
-
-    "wind_speed_km_h": RTL433SensorEntityDescription(
-        name="Wind Speed",
-        key="wind_speed_km_h",
-        device_class=SensorDeviceClass.WIND_SPEED,
-        unit_of_measurement="km/h",
-        value_template="{{ value|float }}",
-        state_class="measurement",
-    )
-    "wind_avg_mi_h": RTL433SensorEntityDescription(
-        name="Wind Speed",
-        key="wind_avg_mi_h",
-        device_class=SensorDeviceClass.WIND_SPEED,
-        unit_of_measurement="mi/h",
-        value_template="{{ value|float }}",
-        state_class="measurement",
-    )
-    "wind_vg_m_s": RTL433SensorEntityDescription(
-        name="Wind Average",
-        key="wind_avg_m_s",
-        device_class=SensorDeviceClass.WIND_SPEED,
-        unit_of_measurement="km/h",
-        value_template="{{ (float(value|float) * 3.6) | round(2) }}",
-        state_class="measurement",
-    )
-    "wind_speed_m_s": RTL433SensorEntityDescription(
-        name="Wind Speed",
-        key="wind_speed_m_s",
-        device_class=SensorDeviceClass.WIND_SPEED,
-        unit_of_measurement="km/h",
-        value_template="{{ float(value|float) * 3.6 }}",
-        state_class="measurement",
-    )
-    "gust_speed_km_h": RTL433SensorEntityDescription(
-        name="Gust Speed",
-        key="gust_speed_km_h",
-        device_class=SensorDeviceClass.WIND_SPEED,
-        unit_of_measurement="km/h",
-        value_template="{{ value|float }}",
-        state_class="measurement",
-    )
-    "noise": RTL433SensorEntityDescription(
-        name="Noise",
-        key="noise",
-        device_class=SensorDeviceClass.SIGNAL_STRENGTH,
-        unit_of_measurement="dB",
-        value_template="{{ value|float|round(2) }}",
-        state_class="measurement",
-        entity_category="diagnostic",
-    )
-    "signal": RTL433SensorEntityDescription(
-        name="Signal Strength",
-        key="signal",
-        device_class=SensorDeviceClass.SIGNAL_STRENGTH,
-        unit_of_measurement="dB",
-        value_template="{{ value|float|round(2) }}",
-        state_class="measurement",
-        entity_category="diagnostic",
-    )
-    "uv": RTL433SensorEntityDescription(
-        name="UV Index",
-        key="uv",
-        unit_of_measurement="UV Index",
-        value_template="{{ value|int }}",
-        state_class="measurement",
-    )
-    "lux": RTL433SensorEntityDescription(
-        name="Outside Luminance",
-        key="lux",
-        device_class=SensorDeviceClass.ILLUMINANCE,
-        unit_of_measurement="lx",
-        value_template="{{ value|int }}",
-        state_class="measurement",
-    )
-    "uvi": RTL433SensorEntityDescription(
-        name="UV Index",
-        key="uvi",
-        unit_of_measurement="UV Index",
-        value_template="{{ value|int }}",
-        state_class="measurement",
-    )
-    "power_W": RTL433SensorEntityDescription(
-        name="Power",
-        key="power_W",
-        device_class=SensorDeviceClass.POWER,
-        unit_of_measurement="W",
-        value_template="{{ value|float }}",
-        state_class="measurement",
-    )
-    "depth_cm": RTL433SensorEntityDescription(
-        name="Depth",
-        key="depth_cm",
-        unit_of_measurement="cm",
-        value_template="{{ value|float }}",
-        state_class="measurement",
-    )
-    "rain_mm": RTL433SensorEntityDescription(
-        name="Rain Total",
-        key="rain_mm",
-        device_class=SensorDeviceClass.PRECIPITATION,
-        unit_of_measurement="mm",
-        value_template="{{ value|float|round(2) }}",
-        state_class="total_increasing",
-    )
-    "rain_rate_mm_h": RTL433SensorEntityDescription(
-        name="Rain Rate",
-        key="rain_rate_mm_h",
-        device_class=SensorDeviceClass.PRECIPITATION_INTENSITY,
-        unit_of_measurement="mm/h",
-        value_template="{{ value|float }}",
-        state_class="measurement",
-    )
-    "rain_in": RTL433SensorEntityDescription(
-        name="Rain Total",
-        key="rain_in",
-        device_class=SensorDeviceClass.PRECIPITATION,
-        unit_of_measurement="mm",
-        value_template="{{ (float(value|float) * 25.4) | round(2) }}",
-        state_class="total_increasing",
-    )
-    "strike_distance": RTL433SensorEntityDescription(
-        name="Lightning Distance",
-        key="strike_distance",
-        unit_of_measurement="mi",
-        value_template="{{ value|int }}",
-        state_class="measurement",
-    )
-    "motion": RTL433SensorEntityDescription(
-        name="Motion",
-        key="motion",
-        device_class=SensorDeviceClass.MOTION,
-    )
-    "light_level": RTL433SensorEntityDescription(
-        name="Light Level",
-        key="light_level",
-        device_class=SensorDeviceClass.ILLUMINANCE,
-        unit_of_measurement="lux",
-    )
-    "sound_level": RTL433SensorEntityDescription(
-        name="Sound Level",
-        key="sound_level",
-        device_class=SensorDeviceClass.SOUND_PRESSURE,
-        unit_of_measurement="dB",
-    )
-    "co2": RTL433SensorEntityDescription(
-        name="CO2 Level",
-        key="co2",
-        device_class=SensorDeviceClass.CARBON_DIOXIDE,
-        unit_of_measurement="ppm",
-    )
-    "voltage": RTL433SensorEntityDescription(
-        name="Voltage",
-        key="voltage",
-        device_class=SensorDeviceClass.VOLTAGE,
-        unit_of_measurement="V",
-    )
-    "current": RTL433SensorEntityDescription(
-        name="Current",
-        key="current",
-        device_class=SensorDeviceClass.CURRENT,
-        unit_of_measurement="A",
-    )
-}
 
 # Numbers
 NUMBERS = {
@@ -568,6 +339,232 @@ BUTTONS = {
     # Add button configurations...
 }
 
+SENSORS = {
+    "time": RTL433SensorEntityDescription(
+        name="Timestamp",
+        key="time",
+        device_class=SensorDeviceClass.TIMESTAMP,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "battery_ok": RTL433SensorEntityDescription(
+        name="Battery",
+        key="battery_ok",
+        device_class=SensorDeviceClass.BATTERY,
+        unit_of_measurement="%",
+        value_template="{{ float(value) * 99 + 1 }}",
+        state_class=StateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "humidity": RTL433SensorEntityDescription(
+        name="Humidity",
+        key="humidity",
+        device_class=SensorDeviceClass.HUMIDITY,
+        unit_of_measurement="%",
+        value_template="{{ value|float }}",
+        state_class=StateClass.MEASUREMENT,
+    ),
+    "humidity_1": RTL433SensorEntityDescription(
+        name="Humidity 1",
+        key="humidity_1",
+        device_class=SensorDeviceClass.HUMIDITY,
+        unit_of_measurement="%",
+        value_template="{{ value|float }}",
+        state_class=StateClass.MEASUREMENT,
+    ),
+    "humidity_2": RTL433SensorEntityDescription(
+        name="Humidity 2",
+        key="humidity_2",
+        device_class=SensorDeviceClass.HUMIDITY,
+        unit_of_measurement="%",
+        value_template="{{ value|float }}",
+        state_class=StateClass.MEASUREMENT,
+    ),
+    "moisture": RTL433SensorEntityDescription(
+        name="Moisture",
+        key="moisture",
+        device_class=SensorDeviceClass.HUMIDITY,
+        unit_of_measurement="%",
+        value_template="{{ value|float }}",
+        state_class=StateClass.MEASUREMENT,
+    ),
+    "pressure_hPa": RTL433SensorEntityDescription(
+        name="Pressure",
+        key="pressure_hPa",
+        device_class=SensorDeviceClass.PRESSURE,
+        unit_of_measurement="hPa",
+        value_template="{{ value|float }}",
+        state_class=StateClass.MEASUREMENT,
+    ),
+    "pressure_kPa": RTL433SensorEntityDescription(
+        name="Pressure",
+        key="pressure_kPa",
+        device_class=SensorDeviceClass.PRESSURE,
+        unit_of_measurement="kPa",
+        value_template="{{ value|float }}",
+        state_class=StateClass.MEASUREMENT,
+    ),
+    "wind_speed_km_h": RTL433SensorEntityDescription(
+        name="Wind Speed",
+        key="wind_speed_km_h",
+        device_class=SensorDeviceClass.WIND_SPEED,
+        unit_of_measurement="km/h",
+        value_template="{{ value|float }}",
+        state_class=StateClass.MEASUREMENT,
+    ),
+    "wind_avg_mi_h": RTL433SensorEntityDescription(
+        name="Wind Speed",
+        key="wind_avg_mi_h",
+        device_class=SensorDeviceClass.WIND_SPEED,
+        unit_of_measurement="mi/h",
+        value_template="{{ value|float }}",
+        state_class=StateClass.MEASUREMENT,
+    ),
+    "wind_avg_m_s": RTL433SensorEntityDescription(
+        name="Wind Speed",
+        key="wind_avg_m_s",
+        device_class=SensorDeviceClass.WIND_SPEED,
+        unit_of_measurement="m/s",
+        value_template="{{ value|float }}",
+        state_class=StateClass.MEASUREMENT,
+    ),
+    "wind_speed_m_s": RTL433SensorEntityDescription(
+        name="Wind Speed",
+        key="wind_speed_m_s",
+        device_class=SensorDeviceClass.WIND_SPEED,
+        unit_of_measurement="m/s",
+        value_template="{{ value|float }}",
+        state_class=StateClass.MEASUREMENT,
+    ),
+    "gust_speed_km_h": RTL433SensorEntityDescription(
+        name="Gust Speed",
+        key="gust_speed_km_h",
+        device_class=SensorDeviceClass.WIND_SPEED,
+        unit_of_measurement="km/h",
+        value_template="{{ value|float }}",
+        state_class=StateClass.MEASUREMENT,
+    ),
+    "noise": RTL433SensorEntityDescription(
+        name="Noise",
+        key="noise",
+        device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+        unit_of_measurement="dB",
+        value_template="{{ value|float|round(2) }}",
+        state_class=StateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "signal": RTL433SensorEntityDescription(
+        name="Signal Strength",
+        key="signal",
+        device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+        unit_of_measurement="dB",
+        value_template="{{ value|float|round(2) }}",
+        state_class=StateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "uv": RTL433SensorEntityDescription(
+        name="UV Index",
+        key="uv",
+        unit_of_measurement="UV Index",
+        value_template="{{ value|int }}",
+        state_class=StateClass.MEASUREMENT,
+    ),
+    "lux": RTL433SensorEntityDescription(
+        name="Outside Luminance",
+        key="lux",
+        device_class=SensorDeviceClass.ILLUMINANCE,
+        unit_of_measurement="lx",
+        value_template="{{ value|int }}",
+        state_class=StateClass.MEASUREMENT,
+    ),
+    "uvi": RTL433SensorEntityDescription(
+        name="UV Index",
+        key="uvi",
+        unit_of_measurement="UV Index",
+        value_template="{{ value|int }}",
+        state_class=StateClass.MEASUREMENT,
+    ),
+    "power_W": RTL433SensorEntityDescription(
+        name="Power",
+        key="power_W",
+        device_class=SensorDeviceClass.POWER,
+        unit_of_measurement="W",
+        value_template="{{ value|float }}",
+        state_class=StateClass.MEASUREMENT,
+    ),
+    "depth_cm": RTL433SensorEntityDescription(
+        name="Depth",
+        key="depth_cm",
+        unit_of_measurement="cm",
+        value_template="{{ value|float }}",
+        state_class=StateClass.MEASUREMENT,
+    ),
+    "rain_mm": RTL433SensorEntityDescription(
+        name="Rain Total",
+        key="rain_mm",
+        device_class=SensorDeviceClass.PRECIPITATION,
+        unit_of_measurement="mm",
+        value_template="{{ value|float|round(2) }}",
+        state_class=StateClass.TOTAL_INCREASING,
+    ),
+    "rain_rate_mm_h": RTL433SensorEntityDescription(
+        name="Rain Rate",
+        key="rain_rate_mm_h",
+        device_class=SensorDeviceClass.PRECIPITATION_INTENSITY,
+        unit_of_measurement="mm/h",
+        value_template="{{ value|float }}",
+        state_class=StateClass.MEASUREMENT,
+    ),
+    "rain_in": RTL433SensorEntityDescription(
+        name="Rain Total",
+        key="rain_in",
+        device_class=SensorDeviceClass.PRECIPITATION,
+        unit_of_measurement="mm",
+        value_template="{{ (value|float) * 25.4 | round(2) }}",
+        state_class=StateClass.TOTAL_INCREASING,
+    ),
+    "strike_distance": RTL433SensorEntityDescription(
+        name="Lightning Distance",
+        key="strike_distance",
+        unit_of_measurement="mi",
+        value_template="{{ value|int }}",
+        state_class=StateClass.MEASUREMENT,
+    ),
+    "motion": RTL433SensorEntityDescription(
+        name="Motion",
+        key="motion",
+        device_class=SensorDeviceClass.MOTION,
+    ),
+    "light_level": RTL433SensorEntityDescription(
+        name="Light Level",
+        key="light_level",
+        device_class=SensorDeviceClass.ILLUMINANCE,
+        unit_of_measurement="lux",
+    ),
+    "sound_level": RTL433SensorEntityDescription(
+        name="Sound Level",
+        key="sound_level",
+        device_class=SensorDeviceClass.SOUND_PRESSURE,
+        unit_of_measurement="dB",
+    ),
+    "co2": RTL433SensorEntityDescription(
+        name="CO2 Level",
+        key="co2",
+        device_class=SensorDeviceClass.CARBON_DIOXIDE,
+        unit_of_measurement="ppm",
+    ),
+    "voltage": RTL433SensorEntityDescription(
+        name="Voltage",
+        key="voltage",
+        device_class=SensorDeviceClass.VOLTAGE,
+        unit_of_measurement="V",
+    ),
+    "current": RTL433SensorEntityDescription(
+        name="Current",
+        key="current",
+        device_class=SensorDeviceClass.CURRENT,
+        unit_of_measurement="A",
+    ),
+}
 
 
 # Use secret_knock to trigger device automations for Honeywell ActivLink doorbells.
