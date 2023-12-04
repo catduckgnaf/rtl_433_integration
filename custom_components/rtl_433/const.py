@@ -240,17 +240,15 @@ BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
         device_class=BinarySensorDeviceClass.SAFETY,
     ),
 }
-
-    # key: name
-    SENSORS: Final[dict[str, RTL433SensorEntityDescription]] = {
-        "time": RTL433SensorEntityDescription(
+SENSORS: Final[dict[str, RTL433SensorEntityDescription]] = {
+    "time": RTL433SensorEntityDescription(
             name="Timestamp",
             key="time",
             device_class=SensorDeviceClass.TIMESTAMP,
             entity_category=EntityCategory.DIAGNOSTIC,
             entity_registry_enabled_default=False,
-        ),
-        "battery_ok": RTL433SensorEntityDescription(
+    ),
+    "battery_ok": RTL433SensorEntityDescription(
             name="Battery",
             key="battery_ok",
             device_class=SensorDeviceClass.BATTERY,
@@ -259,7 +257,7 @@ BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
             state_class="measurement",
             entity_category="diagnostic",
         ),
-        "humidity": RTL433SensorEntityDescription(
+    "humidity": RTL433SensorEntityDescription(
             name="Humidity",
             key="humidity",
             device_class=SensorDeviceClass.HUMIDITY,
@@ -267,7 +265,37 @@ BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
             value_template="{{ value|float }}",
             state_class="measurement",
         ),
-        "humidity_1": RTL433SensorEntityDescription(
+    "humidity_1": RTL433SensorEntityDescription(
+            # Add your desired changes here
+        ),
+    
+     "time": RTL433SensorEntityDescription(
+            name="Timestamp",
+            key="time",
+            device_class=SensorDeviceClass.TIMESTAMP,
+            entity_category=EntityCategory.DIAGNOSTIC,
+            entity_registry_enabled_default=False,
+        ),
+
+
+      "battery_ok": RTL433SensorEntityDescription(
+            name="Battery",
+            key="battery_ok",
+            device_class=SensorDeviceClass.BATTERY,
+            unit_of_measurement="%",
+            value_template="{{ float(value) * 99 + 1 }}",
+            state_class="measurement",
+            entity_category="diagnostic",
+        ),
+    "humidity": RTL433SensorEntityDescription(
+            name="Humidity",
+            key="humidity",
+            device_class=SensorDeviceClass.HUMIDITY,
+            unit_of_measurement="%",
+            value_template="{{ value|float }}",
+            state_class="measurement",
+        ),
+    "humidity_1": RTL433SensorEntityDescription(
             name="Humidity 1",
             key="humidity_1",
             device_class=SensorDeviceClass.HUMIDITY,
@@ -275,7 +303,41 @@ BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
             value_template="{{ value|float }}",
             state_class="measurement",
         ),
-        "humidity_2": RTL433SensorEntityDescription(
+    
+    "time": RTL433SensorEntityDescription(
+            name="Timestamp",
+            key="time",
+            device_class=SensorDeviceClass.TIMESTAMP,
+            entity_category=EntityCategory.DIAGNOSTIC,
+            entity_registry_enabled_default=False,
+        ),
+    "battery_ok": RTL433SensorEntityDescription(
+            name="Battery",
+            key="battery_ok",
+            device_class=SensorDeviceClass.BATTERY,
+            unit_of_measurement="%",
+            value_template="{{ float(value) * 99 + 1 }}",
+            state_class="measurement",
+            entity_category="diagnostic",
+        ),
+    "humidity": RTL433SensorEntityDescription(
+            name="Humidity",
+            key="humidity",
+            device_class=SensorDeviceClass.HUMIDITY,
+            unit_of_measurement="%",
+            value_template="{{ value|float }}",
+            state_class="measurement",
+        ),
+
+    "humidity_1": RTL433SensorEntityDescription(
+            name="Humidity 1",
+            key="humidity_1",
+            device_class=SensorDeviceClass.HUMIDITY,
+            unit_of_measurement="%",
+            value_template="{{ value|float }}",
+            state_class="measurement",
+        ),
+    "humidity_2": RTL433SensorEntityDescription(
             name="Humidity 2",
             key="humidity_2",
             device_class=SensorDeviceClass.HUMIDITY,
@@ -283,7 +345,7 @@ BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
             value_template="{{ value|float }}",
             state_class="measurement",
         ),
-        "moisture": RTL433SensorEntityDescription(
+    "moisture": RTL433SensorEntityDescription(
             name="Moisture",
             key="moisture",
             device_class=SensorDeviceClass.HUMIDITY,
@@ -291,7 +353,7 @@ BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
             value_template="{{ value|float }}",
             state_class="measurement",
         ),
-        "pressure_hPa": RTL433SensorEntityDescription(
+    "pressure_hPa": RTL433SensorEntityDescription(
             name="Pressure",
             key="pressure_hPa",
             device_class=SensorDeviceClass.PRESSURE,
@@ -300,7 +362,7 @@ BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
             state_class="measurement",
         ),
         # BEGIN: be15d9bcejpp
-        "pressure_kPa": RTL433SensorEntityDescription(
+    "pressure_kPa": RTL433SensorEntityDescription(
             name="Pressure",
             key="pressure_kPa",
             device_class=SensorDeviceClass.PRESSURE,
@@ -308,7 +370,7 @@ BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
             value_template="{{ value|float }}",
             state_class="measurement",
         ),
-        "wind_speed_km_h": RTL433SensorEntityDescription(
+    "wind_speed_km_h": RTL433SensorEntityDescription(
             name="Wind Speed",
             key="wind_speed_km_h",
             device_class=SensorDeviceClass.WIND_SPEED,
@@ -316,7 +378,7 @@ BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
             value_template="{{ value|float }}",
             state_class="measurement",
         ),
-        "wind_avg_mi_h": RTL433SensorEntityDescription(
+    "wind_avg_mi_h": RTL433SensorEntityDescription(
             name="Wind Speed",
             key="wind_avg_mi_h",
             device_class=SensorDeviceClass.WIND_SPEED,
@@ -324,25 +386,15 @@ BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
             value_template="{{ value|float }}",
             state_class="measurement",
         ),
-        "wind_avg_m_s": RTL433SensorEntityDescription(
+    "wind_avg_m_s": RTL433SensorEntityDescription(
             name="Wind Speed",
             key="wind_avg_m_s",
             device_class=SensorDeviceClass.WIND_SPEED,
             unit_of_measurement="m/s",
             value_template="{{ value|float }}",
             state_class="measurement",
-        )
-        # END: be15d9bcejpp
-    }
+        ),
 
-    "pressure_kPa": RTL433SensorEntityDescription(
-        name="Pressure",
-        key="pressure_kPa",
-        device_class=SensorDeviceClass.PRESSURE,
-        unit_of_measurement="kPa",
-        value_template="{{ value|float }}",
-        state_class="measurement",
-    )
     "wind_speed_km_h": RTL433SensorEntityDescription(
         name="Wind Speed",
         key="wind_speed_km_h",
@@ -504,7 +556,7 @@ BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
         device_class=SensorDeviceClass.CURRENT,
         unit_of_measurement="A",
     )
-
+}
 
 # Numbers
 NUMBERS = {
@@ -515,6 +567,8 @@ NUMBERS = {
 BUTTONS = {
     # Add button configurations...
 }
+
+
 
 # Use secret_knock to trigger device automations for Honeywell ActivLink doorbells.
 secret_knock_mappings = [
