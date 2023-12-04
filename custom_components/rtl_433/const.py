@@ -257,52 +257,6 @@ PROTOCOLS = {
         249:  "Bresser lightning",
         250: "Schou 72543 Day Rain Gauge"
     }
-
-from enum import Enum
-
-class SensorDeviceClass(Enum):
-    TIMESTAMP = "timestamp"
-    BATTERY = "battery"
-    HUMIDITY = "humidity"
-    PRESSURE = "pressure"
-    WIND_SPEED = "wind_speed"
-    SIGNAL_STRENGTH = "signal_strength"
-    ILLUMINANCE = "illuminance"
-    POWER = "power"
-    MOTION = "motion"
-    SOUND_PRESSURE = "sound_pressure"
-    CARBON_DIOXIDE = "carbon_dioxide"
-    VOLTAGE = "voltage"
-    CURRENT = "current"
-    PRECIPITATION = "precipitation"
-    PRECIPITATION_INTENSITY = "precipitation_intensity"
-
-class EntityCategory(Enum):
-    DIAGNOSTIC = "diagnostic"
-
-class StateClass(Enum):
-    MEASUREMENT = "measurement"
-    TOTAL_INCREASING = "total_increasing"
-
-class RTL433SensorEntityDescription:
-    def __init__(
-        self,
-        name,
-        key,
-        device_class=None,
-        unit_of_measurement=None,
-        value_template=None,
-        state_class=None,
-        entity_category=None,
-    ):
-        self.name = name
-        self.key = key
-        self.device_class = device_class
-        self.unit_of_measurement = unit_of_measurement
-        self.value_template = value_template
-        self.state_class = state_class
-        self.entity_category = entity_category
-
 # key: name
 BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
     "tamper": BinarySensorEntityDescription(
