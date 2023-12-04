@@ -1,5 +1,4 @@
-
-
+from enum import Enum
 # Config Flow
 WS_ID = "ID of rtl_433 Webserver"
 WS_HOST= "192.1688.0.100:9443"
@@ -14,7 +13,6 @@ DEVICE_FREQ = "Frequency of RF Device"
 # Attributes
 PLATFORMS = ['number', 'binary_sensor', 'sensor', 'switch']
 MANUFACTURER = "RTL_SDR"
-from enum import Enum
 
 class BinarySensorDeviceClass(Enum):
     BATTERY = "battery"
@@ -24,7 +22,6 @@ class BinarySensorDeviceClass(Enum):
     MOISTURE = "moisture"
     DOOR = "door"
     SAFETY = "safety"
-    
 class SensorDeviceClass(Enum):
     TIMESTAMP = "timestamp"
     BATTERY = "battery"
@@ -67,7 +64,6 @@ class RTL433SensorEntityDescription:
         self.value_template = value_template
         self.state_class = state_class
         self.entity_category = entity_category
-        
 class BinarySensorEntityDescription:
     def __init__(
         self,
@@ -85,9 +81,7 @@ class BinarySensorEntityDescription:
         self.unit_of_measurement = unit_of_measurement
         self.value_template = value_template
         self.state_class = state_class
-        self.entity_category = entity_category
-        
-# Protocols
+        self.entity_category = entity_category       
 PROTOCOLS = {
         1: "Silvercrest Remote Control",
         2: "Rubicson, TFA 30.3197 or InFactory PT-310 Temperature Sensor",
@@ -549,27 +543,38 @@ SENSORS = {
     ),
 }
 
+class AutomationType(Enum):
+    TRIGGER = "trigger"
 
-# Use secret_knock to trigger device automations for Honeywell ActivLink doorbells.
+class ButtonType(Enum):
+    SHORT_RELEASE = "button_short_release"
+    TRIPLE_PRESS = "button_triple_press"
+
+class SecretKnockMappings:
+    @staticmethod
+    def create_mapping(object_suffix, automation_type, button_type, payload):
+        return {
+            "device_type": "device_automation",
+            "object_suffix": object_suffix,
+            "config": {
+                "automation_type": automation_type.value,
+                "type": button_type.value,
+                "subtype": "button_1",
+                "payload": payload,
+            },
+        }
+
 secret_knock_mappings = [
-    {
-        "device_type": "device_automation",
-        "object_suffix": "Knock",
-        "config": {
-            "automation_type": "trigger",
-            "type": "button_short_release",
-            "subtype": "button_1",
-            "payload": 0,
-        },
-    },
-    {
-        "device_type": "device_automation",
-        "object_suffix": "Secret-Knock",
-        "config": {
-            "automation_type": "trigger",
-            "type": "button_triple_press",
-            "subtype": "button_1",
-            "payload": 1,
-        },
-    },
+    SecretKnockMappings.create_mapping(
+        object_suffix="Knock",
+        automation_type=AutomationType.TRIGGER,
+        button_type=ButtonType.SHORT_RELEASE,
+        payload=0,
+    ),
+    SecretKnockMappings.create_mapping(
+        object_suffix="Secret-Knock",
+        automation_type=AutomationType.TRIGGER,
+        button_type=ButtonType.TRIPLE_PRESS,
+        payload=1,
+    ),
 ]
